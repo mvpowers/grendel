@@ -1,28 +1,37 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-  </div>
+  <VApp>
+    <VToolbar
+      v-if="!ignoredToolbarRoutes.includes($router.currentRoute.name)"
+      app>
+      <VToolbarTitle class="headline text-uppercase">
+        <span class="font-weight-light">
+          Super
+        </span>
+        <span>Trivia</span>
+        <span class="font-weight-light">
+          Wednesday
+        </span>
+      </VToolbarTitle>
+      <VSpacer />
+      <VBtn
+        flat
+        href="https://github.com/vuetifyjs/vuetify/releases/latest"
+        target="_blank">
+        <VIcon>more_vert</VIcon>
+      </VBtn>
+    </VToolbar>
+
+    <VContent>
+      <RouterView />
+    </VContent>
+  </VApp>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
-
 export default {
-  name: 'app',
-  components: {
-    HelloWorld
-  }
-}
+  name: 'App',
+  data: () => ({
+    ignoredToolbarRoutes: ['home'],
+  }),
+};
 </script>
-
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
