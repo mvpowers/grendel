@@ -1,0 +1,50 @@
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using GrendelData;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+
+namespace GrendelApi.Controllers
+{
+    [ApiController]
+    [Route("[controller]")]
+    public class VoteOptionsController : ControllerBase
+    {
+        private readonly ILogger<VoteOptionsController> _logger;
+        private readonly GrendelContext _context;
+
+        public VoteOptionsController(ILogger<VoteOptionsController> logger, GrendelContext context)
+        {
+            _logger = logger;
+            _context = context;
+        }
+
+        [HttpGet()]
+        public async Task<ActionResult<Vote>> ReadActiveVoteOptions()
+        {
+            var votes = await _context
+                .VoteOptions
+                .AsNoTracking()
+                .Where(x => x.IsActive == true)
+                .ToListAsync();
+
+            if (votes == null)
+            {
+                return NotFound();
+            }
+            
+            return Ok(votes);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<int>> CreateVoteOption(VoteOption voteOption)
+        {
+            await _context.VoteOptions.AddAsync(voteOption);
+            await _context.SaveChangesAsync();
+
+            return Ok(voteOption.Id);
+        }
+    }
+}

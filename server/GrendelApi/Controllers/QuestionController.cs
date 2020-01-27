@@ -1,7 +1,4 @@
-﻿// using System;
-// using System.Collections.Generic;
-// using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using GrendelData;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,12 +20,28 @@ namespace GrendelApi.Controllers
         }
 
         [HttpGet("{questionId}")]
-        public async Task<ActionResult<Question>> ReadQuestion(int questionId)
+        public async Task<ActionResult<Question>> ReadQuestionById(int questionId)
         {
             var question = await _context
                 .Questions
                 .AsNoTracking()
                 .FirstOrDefaultAsync(x => x.Id == questionId);
+
+            if (question == null)
+            {
+                return NotFound();
+            }
+            
+            return Ok(question);
+        }
+        
+        [HttpGet("{questionId}")]
+        public async Task<ActionResult<Question>> ReadActiveQuestion()
+        {
+            var question = await _context
+                .Questions
+                .AsNoTracking()
+                .FirstOrDefaultAsync(x => x.IsActive == true);
 
             if (question == null)
             {
