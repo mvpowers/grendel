@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 
 namespace GrendelApi
 {
@@ -27,6 +28,12 @@ namespace GrendelApi
         {
             services.AddCors();
             services.AddControllers();
+            
+            // add swagger
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+            }); 
             
             // configure strongly typed settings objects
             var appSettingsSection = Configuration.GetSection("AppSettings");
@@ -67,6 +74,13 @@ namespace GrendelApi
             {
                 app.UseDeveloperExceptionPage();
                 IdentityModelEventSource.ShowPII = true; 
+                
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Grendel API");
+                    c.RoutePrefix = string.Empty;
+                }); 
             }
 
             app.UseHttpsRedirection();
