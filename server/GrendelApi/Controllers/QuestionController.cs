@@ -35,7 +35,7 @@ namespace GrendelApi.Controllers
             return Ok(question);
         }
         
-        [HttpGet("{questionId}")]
+        [HttpGet]
         public async Task<ActionResult<Question>> ReadActiveQuestion()
         {
             var question = await _context
@@ -52,7 +52,7 @@ namespace GrendelApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> CreateQuestion(Question question)
+        public async Task<ActionResult<int>> CreateQuestion([FromBody]Question question)
         {
             await _context.Questions.AddAsync(question);
             await _context.SaveChangesAsync();

@@ -47,7 +47,7 @@ namespace GrendelApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> CreateVote(Vote vote)
+        public async Task<ActionResult<int>> CreateVote([FromBody]Vote vote)
         {
             try
             {

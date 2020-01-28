@@ -10,18 +10,18 @@ namespace GrendelApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class VoteOptionsController : ControllerBase
+    public class VoteOptionController : ControllerBase
     {
-        private readonly ILogger<VoteOptionsController> _logger;
+        private readonly ILogger<VoteOptionController> _logger;
         private readonly GrendelContext _context;
 
-        public VoteOptionsController(ILogger<VoteOptionsController> logger, GrendelContext context)
+        public VoteOptionController(ILogger<VoteOptionController> logger, GrendelContext context)
         {
             _logger = logger;
             _context = context;
         }
 
-        [HttpGet()]
+        [HttpGet]
         public async Task<ActionResult<Vote>> ReadActiveVoteOptions()
         {
             var votes = await _context
@@ -39,7 +39,7 @@ namespace GrendelApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> CreateVoteOption(VoteOption voteOption)
+        public async Task<ActionResult<int>> CreateVoteOption([FromBody]VoteOption voteOption)
         {
             await _context.VoteOptions.AddAsync(voteOption);
             await _context.SaveChangesAsync();
