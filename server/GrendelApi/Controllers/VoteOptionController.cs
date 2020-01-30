@@ -2,6 +2,8 @@
 using System.Linq;
 using System.Threading.Tasks;
 using GrendelData;
+using GrendelData.VoteOptions;
+using GrendelData.Votes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

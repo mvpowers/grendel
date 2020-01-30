@@ -1,5 +1,6 @@
 using System.Text;
 using GrendelApi.Services;
+using GrendelCommon;
 using GrendelData;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -29,15 +30,14 @@ namespace GrendelApi
             services.AddCors();
             services.AddControllers();
             
+            var appSettingsSection = Configuration.GetSection("AppSettings");
+            services.Configure<AppSettings>(appSettingsSection);
+            
             // add swagger
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "My API", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Grendel API", Version = "v1" });
             }); 
-            
-            // configure strongly typed settings objects
-            var appSettingsSection = Configuration.GetSection("AppSettings");
-            services.Configure<AppSettings>(appSettingsSection);
             
             // configure jwt authentication
             var appSettings = appSettingsSection.Get<AppSettings>();
@@ -60,8 +60,10 @@ namespace GrendelApi
                     };
                 });
             
-            services.AddDbContext<GrendelContext>(opt =>
-                opt.UseInMemoryDatabase("Grendel"));
+            services.AddDbContext<GrendelContext>(options =>
+            {
+                options.UseNpgsql(DatabaseSettings.GetConnectionString());
+            });
             
             // configure DI for application services
             services.AddScoped<IUserService, UserService>();

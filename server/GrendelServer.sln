@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrendelApi", "GrendelApi\Gr
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrendelData", "GrendelData\GrendelData.csproj", "{7545D6ED-83A5-47DA-B41B-712C153377B4}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GrendelCommon", "GrendelCommon\GrendelCommon.csproj", "{9997C8DC-7F2D-4169-9722-3EC76161E1E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,5 +21,9 @@ Global
 		{7545D6ED-83A5-47DA-B41B-712C153377B4}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7545D6ED-83A5-47DA-B41B-712C153377B4}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7545D6ED-83A5-47DA-B41B-712C153377B4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9997C8DC-7F2D-4169-9722-3EC76161E1E8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9997C8DC-7F2D-4169-9722-3EC76161E1E8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9997C8DC-7F2D-4169-9722-3EC76161E1E8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9997C8DC-7F2D-4169-9722-3EC76161E1E8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

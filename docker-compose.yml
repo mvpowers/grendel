@@ -1,0 +1,15 @@
+version: '3'
+services:
+  db:
+    image: 'bitnami/postgresql:latest'
+    environment:
+      - POSTGRESQL_USERNAME=user
+      - POSTGRESQL_PASSWORD=pass
+      - POSTGRESQL_DATABASE=grendel
+    ports:
+      - '5002:5432'
+    volumes:
+      - 'postgres_data:/bitnami/postgresql'
+volumes:
+  postgres_data:
+    driver: local

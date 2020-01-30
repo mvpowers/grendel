@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace GrendelData
+namespace GrendelData.Users
 {
-    public class AuthRequest
+    public class UserAuthRequest
     {
         [Required]
         public long Phone { get; set; }

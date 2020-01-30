@@ -1,16 +1,17 @@
 using System.Collections.Generic;
 using System.Linq;
-using GrendelData;
 
-namespace GrendelApi.Helpers
+namespace GrendelData.Users
 {
-    public static class ExtensionMethods
+    public static class UserDataMapper
     {
         public static IEnumerable<User> WithoutPasswords(this IEnumerable<User> users) {
-            return users.Select(x => x.WithoutPassword());
+            return users.Select(WithoutPassword);
         }
 
-        public static User WithoutPassword(this User user) {
+        public static User WithoutPassword(this User user)
+        {
+            user.PasswordResetToken = null;
             user.Password = null;
             return user;
         }

@@ -1,5 +1,5 @@
 using GrendelApi.Services;
-using GrendelData;
+using GrendelData.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,9 +19,9 @@ namespace GrendelApi.Controllers
         
         [AllowAnonymous]
         [HttpPost("authenticate")]
-        public IActionResult Authenticate([FromBody]AuthRequest authRequest)
+        public IActionResult Authenticate([FromBody]UserAuthRequest userAuthRequest)
         {
-            var user = _userService.Authenticate(authRequest.Phone, authRequest.Password);
+            var user = _userService.Authenticate(userAuthRequest.Phone, userAuthRequest.Password);
 
             if (user == null)
                 return BadRequest(new { message = "Phone or password is incorrect" });

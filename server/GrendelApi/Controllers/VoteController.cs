@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GrendelData;
+using GrendelData.Votes;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -47,20 +47,20 @@ namespace GrendelApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> CreateVote([FromBody]Vote vote)
+        public async Task<ActionResult<int>> CreateVote([FromBody]VoteCreateRequest request)
         {
             try
             {
+                var vote = request.ToVote();
                 await _context.Votes.AddAsync(vote);
                 await _context.SaveChangesAsync();
+                return Ok(vote.Id);
             }
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
-                return BadRequest(e);
+                return BadRequest(e.GetBaseException());
             }
-
-            return Ok(vote.Id);
         }
     }
 }
