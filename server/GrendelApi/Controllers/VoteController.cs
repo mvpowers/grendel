@@ -59,7 +59,7 @@ namespace GrendelApi.Controllers
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
-                return BadRequest(e.GetBaseException());
+                return BadRequest(e.Message);
             }
         }
     }

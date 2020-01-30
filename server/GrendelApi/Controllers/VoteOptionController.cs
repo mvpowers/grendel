@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GrendelData;
@@ -41,12 +42,20 @@ namespace GrendelApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> CreateVoteOption([FromBody]VoteOption voteOption)
+        public async Task<ActionResult<int>> CreateVoteOption([FromBody]VoteOptionCreateRequest request)
         {
-            await _context.VoteOptions.AddAsync(voteOption);
-            await _context.SaveChangesAsync();
-
-            return Ok(voteOption.Id);
+            try
+            {
+                var voteOption = request.ToVoteOption();
+                await _context.VoteOptions.AddAsync(voteOption);
+                await _context.SaveChangesAsync();
+                return Ok(voteOption);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return BadRequest(e.Message);
+            }
         }
     }
 }

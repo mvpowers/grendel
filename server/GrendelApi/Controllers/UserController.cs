@@ -18,7 +18,7 @@ namespace GrendelApi.Controllers
         }
         
         [AllowAnonymous]
-        [HttpPost("authenticate")]
+        [HttpPost("auth")]
         public IActionResult Authenticate([FromBody]UserAuthRequest userAuthRequest)
         {
             var user = _userService.Authenticate(userAuthRequest.Phone, userAuthRequest.Password);

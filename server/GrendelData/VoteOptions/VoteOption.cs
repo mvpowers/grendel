@@ -12,6 +12,11 @@ namespace GrendelData.VoteOptions
         public bool IsActive { get; set; }
         
         public List<Vote> Votes { get; set; }
+
+        public VoteOption()
+        {
+            Votes = new List<Vote>();
+        }
     }
 
     public class VoteOptionConfiguration : IEntityTypeConfiguration<VoteOption>
