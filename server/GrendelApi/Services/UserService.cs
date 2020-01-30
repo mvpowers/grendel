@@ -4,8 +4,11 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 using GrendelData;
 using GrendelData.Users;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -13,30 +16,27 @@ namespace GrendelApi.Services
 {
     public interface IUserService
     {
-        User Authenticate(long phone, string password);
-        IEnumerable<User> GetAll();
+        Task<User> Authenticate(long phone, string password);
+        Task<int> GetUserIdFromAuthHeader(string authHeader);
     }
     public class UserService : IUserService
     {
-        private readonly List<User> _users = new List<User>
-        { 
-            new User { Id = 1, Name = "Test Name", Phone = 9091234567, Password = "test" } 
-        };
+        private readonly IAppSettings _appSettings;
+        private readonly ILogger<UserService> _logger;
+        private readonly GrendelContext _context;
 
-        private readonly AppSettings _appSettings;
-
-        public UserService(IOptions<AppSettings> appSettings)
+        public UserService(IOptions<AppSettings> appSettings, ILogger<UserService> logger, GrendelContext context)
         {
             _appSettings = appSettings.Value;
+            _logger = logger;
+            _context = context;
         }
 
-        public User Authenticate(long phone, string password)
+        public async Task<User> Authenticate(long phone, string password)
         {
-            var user = _users.SingleOrDefault(x => x.Phone == phone && x.Password == password);
+            var user = _context.Users.SingleOrDefault(x => x.Phone == phone && x.Password == password);
 
-            // return null if user not found
-            if (user == null)
-                return null;
+            if (user == null) return null;
 
             // authentication successful so generate jwt token
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -53,12 +53,17 @@ namespace GrendelApi.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             user.Token = tokenHandler.WriteToken(token);
 
+            await _context.AddAsync(user);
+
             return user.WithoutPassword();
         }
 
-        public IEnumerable<User> GetAll()
+        public async Task<int> GetUserIdFromAuthHeader(string authHeader)
         {
-            return _users.WithoutPasswords();
+            var token = authHeader.Replace("Bearer ", "");
+            var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == token) ?? throw new ArgumentNullException(nameof(token));
+            
+            return user.Id;
         }
     }
 }

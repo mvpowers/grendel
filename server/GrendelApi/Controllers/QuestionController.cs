@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using GrendelApi.Services;
 using GrendelData;
 using GrendelData.Questions;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +14,13 @@ namespace GrendelApi.Controllers
     {
         private readonly ILogger<QuestionController> _logger;
         private readonly GrendelContext _context;
+        private readonly IUserService _userService;
 
-        public QuestionController(ILogger<QuestionController> logger, GrendelContext context)
+        public QuestionController(ILogger<QuestionController> logger, GrendelContext context, IUserService userService)
         {
             _logger = logger;
             _context = context;
+            _userService = userService;
         }
 
         [HttpGet("{questionId}")]
@@ -53,8 +56,12 @@ namespace GrendelApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> CreateQuestion([FromBody]Question question)
+        public async Task<ActionResult<int>> CreateQuestion([FromBody]QuestionCreateRequest request)
         {
+            var authHeader = Request.Headers["Authorization"];
+            var userId = await _userService.GetUserIdFromAuthHeader(authHeader);
+            var question = request.ToQuestion(userId);
+            
             await _context.Questions.AddAsync(question);
             await _context.SaveChangesAsync();
 

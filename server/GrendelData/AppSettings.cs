@@ -1,6 +1,10 @@
 namespace GrendelData
 {
-    public class AppSettings
+    public interface IAppSettings
+    {
+        string Secret { get; }
+    }
+    public class AppSettings : IAppSettings
     {
         public string Secret { get; set; }
     }

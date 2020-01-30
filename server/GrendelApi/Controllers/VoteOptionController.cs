@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GrendelData;
@@ -33,10 +32,7 @@ namespace GrendelApi.Controllers
                 .Where(x => x.IsActive == true)
                 .ToListAsync();
 
-            if (votes == null)
-            {
-                return NotFound();
-            }
+            if (votes == null) return NotFound();
             
             return Ok(votes);
         }

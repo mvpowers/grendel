@@ -18,6 +18,11 @@ namespace GrendelData.Questions
         public User User { get; set; }
         
         public List<Vote> Votes { get; set; }
+
+        public Question()
+        {
+            Votes = new List<Vote>();
+        }
     }
 
     public class QuestionConfiguration : IEntityTypeConfiguration<Question>
