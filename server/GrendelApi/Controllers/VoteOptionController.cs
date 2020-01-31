@@ -25,7 +25,7 @@ namespace GrendelApi.Controllers
             _context = context;
         }
 
-        [HttpGet]
+        [HttpGet("active")]
         public async Task<ActionResult<List<VoteOptionView>>> ReadActiveVoteOptions()
         {
             var voteOptions = await _context

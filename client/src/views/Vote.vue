@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { QuestionRequests } from '../requests';
+import { QuestionRequests, VoteOptionRequests } from '../requests';
 import VoteModal from '../components/VoteModal';
 
 export default {
@@ -41,26 +41,29 @@ export default {
     modalStatus: false,
     question: '',
     selectedOption: {},
-    voteOptions: [
-      { id: 1, name: 'Bob', avatar: 'http://i.pravatar.cc/150' },
-      { id: 2, name: 'Tony', avatar: 'http://i.pravatar.cc/151' },
-      { id: 3, name: 'Rob', avatar: 'http://i.pravatar.cc/152' },
-      { id: 4, name: 'Jerry', avatar: 'http://i.pravatar.cc/153' },
-      { id: 5, name: 'Tom', avatar: 'http://i.pravatar.cc/154' },
-    ],
+    voteOptions: [],
   }),
-  mounted() {
-    this.getActiveQuestion();
+  async mounted() {
+    await this.readActiveQuestion();
+    await this.readActiveVoteOptions();
   },
   methods: {
     handleClick(option) {
       this.selectedOption = option;
       this.modalStatus = true;
     },
-    async getActiveQuestion() {
+    async readActiveQuestion() {
       try {
         const { data } = await QuestionRequests.readActiveQuestion();
         this.question = data.inquiry;
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    async readActiveVoteOptions() {
+      try {
+        const { data } = await VoteOptionRequests.readActiveVoteOptions();
+        this.voteOptions = data.map((x, idx) => ({ ...x, avatar: `http://i.pravatar.cc/${150 + idx}` }));
       } catch (e) {
         console.error(e);
       }
