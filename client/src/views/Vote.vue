@@ -5,7 +5,7 @@
         xs12
         sm8>
         <div class="title text-xs-center my-3">
-          {{ question }}
+          {{ question.inquiry }}
         </div>
         <VList>
           <template v-for="(option, index) in voteOptions">
@@ -26,7 +26,9 @@
       </VFlex>
     </VLayout>
     <VoteModal
-      :selection="selectedOption"
+      :question-id="question.id"
+      :vote-option-id="selectedOption.id"
+      :vote-option-name="selectedOption.name"
       :modal-status.sync="modalStatus" />
   </VContainer>
 </template>
@@ -39,8 +41,14 @@ export default {
   components: { VoteModal },
   data: () => ({
     modalStatus: false,
-    question: '',
-    selectedOption: {},
+    question: {
+      id: 0,
+      inquiry: '',
+    },
+    selectedOption: {
+      id: 0,
+      name: '',
+    },
     voteOptions: [],
   }),
   async mounted() {
@@ -55,7 +63,7 @@ export default {
     async readActiveQuestion() {
       try {
         const { data } = await QuestionRequests.readActiveQuestion();
-        this.question = data.inquiry;
+        this.question = data;
       } catch (e) {
         console.error(e);
       }

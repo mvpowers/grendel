@@ -7,7 +7,7 @@
         <VCardText class="title text-xs-center">
           Vote for
           <span class="font-italic">
-            {{ selection.name }}
+            {{ voteOptionName }}
           </span>?
         </VCardText>
         <VCardText>
@@ -37,6 +37,8 @@
 </template>
 
 <script>
+import { VoteRequests } from '../requests';
+
 export default {
   name: 'VoteModal',
   props: {
@@ -44,8 +46,16 @@ export default {
       type: Boolean,
       required: true,
     },
-    selection: {
-      type: Object,
+    voteOptionName: {
+      type: String,
+      required: true,
+    },
+    voteOptionId: {
+      type: Number,
+      required: true,
+    },
+    questionId: {
+      type: Number,
       required: true,
     },
   },
@@ -54,14 +64,26 @@ export default {
   }),
   methods: {
     handleCancel() {
-      console.warn('vote cancelled');
       this.$emit('update:modalStatus', false);
       this.voteComment = '';
     },
-    handleSubmit() {
-      console.warn('vote submitted', this.selection);
+    async handleSubmit() {
+      await this.createVote();
       this.$emit('update:modalStatus', false);
       this.voteComment = '';
+    },
+    async createVote() {
+      try {
+        const voteCreateRequest = {
+          comment: this.voteComment,
+          questionId: this.questionId,
+          voteOptionId: this.voteOptionId,
+        };
+
+        await VoteRequests.createVote(voteCreateRequest);
+      } catch (e) {
+        console.error(e);
+      }
     },
   },
 };
