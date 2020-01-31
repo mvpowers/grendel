@@ -8,7 +8,8 @@ namespace GrendelApi.Controllers
 {
     [Authorize]
     [ApiController]
-    [Route("[controller]")]
+    [ApiVersion("1.0")]
+    [Route( "api/v{version:apiVersion}/[controller]" )]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;

@@ -12,7 +12,8 @@ using Microsoft.Extensions.Logging;
 namespace GrendelApi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [ApiVersion("1.0")]
+    [Route( "api/v{version:apiVersion}/[controller]" )]
     public class VoteOptionController : ControllerBase
     {
         private readonly ILogger<VoteOptionController> _logger;

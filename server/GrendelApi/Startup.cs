@@ -29,6 +29,7 @@ namespace GrendelApi
         {
             services.AddCors();
             services.AddControllers();
+            services.AddApiVersioning();
             
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);

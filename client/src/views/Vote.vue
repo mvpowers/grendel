@@ -32,13 +32,14 @@
 </template>
 
 <script>
+import { QuestionRequests } from '../requests';
 import VoteModal from '../components/VoteModal';
 
 export default {
   components: { VoteModal },
   data: () => ({
     modalStatus: false,
-    question: 'Who stole the cookies from the cookie jar?',
+    question: '',
     selectedOption: {},
     voteOptions: [
       { id: 1, name: 'Bob', avatar: 'http://i.pravatar.cc/150' },
@@ -48,10 +49,21 @@ export default {
       { id: 5, name: 'Tom', avatar: 'http://i.pravatar.cc/154' },
     ],
   }),
+  mounted() {
+    this.getActiveQuestion();
+  },
   methods: {
     handleClick(option) {
       this.selectedOption = option;
       this.modalStatus = true;
+    },
+    async getActiveQuestion() {
+      try {
+        const { data } = await QuestionRequests.readActiveQuestion();
+        this.question = data.inquiry;
+      } catch (e) {
+        console.error(e);
+      }
     },
   },
 };

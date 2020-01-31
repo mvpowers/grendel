@@ -9,7 +9,8 @@ using Microsoft.Extensions.Logging;
 namespace GrendelApi.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [ApiVersion("1.0")]
+    [Route( "api/v{version:apiVersion}/[controller]" )]
     public class QuestionController : ControllerBase
     {
         private readonly ILogger<QuestionController> _logger;
@@ -42,7 +43,7 @@ namespace GrendelApi.Controllers
             var question = await _context
                 .Questions
                 .AsNoTracking()
-                .FirstOrDefaultAsync(x => x.IsActive == true);
+                .FirstOrDefaultAsync(x => x.IsActive);
 
             if (question == null) return NotFound();
             
