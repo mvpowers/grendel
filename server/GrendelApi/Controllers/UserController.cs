@@ -21,7 +21,7 @@ namespace GrendelApi.Controllers
         
         [AllowAnonymous]
         [HttpPost("auth")]
-        public async Task<ActionResult<UserView>> Authenticate([FromBody]UserAuthRequest userAuthRequest)
+        public async Task<ActionResult<UserView>> AuthenticateUser([FromBody]UserAuthRequest userAuthRequest)
         {
             var user = await _userService.Authenticate(userAuthRequest.Phone, userAuthRequest.Password);
 

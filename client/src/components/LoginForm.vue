@@ -30,14 +30,18 @@
               </VTooltip>
             </VToolbar>
             <VCardText>
-              <VForm>
+              <VForm
+                id="login-form"
+                @submit.prevent="authenticateUser">
                 <VTextField
+                  v-model="phone"
                   prepend-icon="person"
                   name="login"
                   label="Login"
-                  type="text" />
+                  type="phone" />
                 <VTextField
                   id="password"
+                  v-model="password"
                   prepend-icon="lock"
                   name="password"
                   label="Password"
@@ -46,7 +50,10 @@
             </VCardText>
             <VCardActions>
               <VSpacer />
-              <VBtn color="primary">
+              <VBtn
+                color="primary"
+                type="submit"
+                form="login-form">
                 Login
               </VBtn>
             </VCardActions>
@@ -58,9 +65,33 @@
 </template>
 
 <script>
+import router from '@/router';
+import { UserRequests } from '../requests';
+import { localStorageKeys, routes } from '../constants';
+
 export default {
   data: () => ({
     drawer: null,
+    phone: '',
+    password: '',
   }),
+  methods: {
+    async authenticateUser() {
+      if (!this.phone || !this.password) return;
+
+      try {
+        const userAuthRequest = {
+          phone: parseInt(this.phone, 10),
+          password: this.password,
+        };
+
+        const { data } = await UserRequests.authenticateUser(userAuthRequest);
+        localStorage.setItem(localStorageKeys.AUTH_TOKEN, data.token.toString());
+        router.push({ name: routes.VOTE });
+      } catch (e) {
+        console.error(e);
+      }
+    },
+  },
 };
 </script>

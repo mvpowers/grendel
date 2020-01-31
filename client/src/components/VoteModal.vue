@@ -37,7 +37,9 @@
 </template>
 
 <script>
+import router from '../router';
 import { VoteRequests } from '../requests';
+import { routes } from '../constants';
 
 export default {
   name: 'VoteModal',
@@ -81,6 +83,8 @@ export default {
         };
 
         await VoteRequests.createVote(voteCreateRequest);
+        router.push({ name: routes.WAIT });
+        // todo handle 400
       } catch (e) {
         console.error(e);
       }

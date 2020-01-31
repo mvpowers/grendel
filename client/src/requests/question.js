@@ -1,4 +1,4 @@
-import { requestInstance } from '@/requests';
+import requestInstance from '@/requests';
 
 const API_CONTROLLER = 'question';
 
