@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace GrendelData.VoteOptions
 {
@@ -12,6 +13,24 @@ namespace GrendelData.VoteOptions
             {
                 Name = request.Name
             };
+        }
+
+        public static VoteOptionView ToVoteOptionView(this VoteOption voteOption)
+        {
+            if (voteOption == null) throw new ArgumentNullException(nameof(voteOption));
+            
+            return new VoteOptionView()
+            {
+                Id = voteOption.Id,
+                Name = voteOption.Name
+            };
+        }
+
+        public static List<VoteOptionView> ToVoteOptionView(this List<VoteOption> voteOptions)
+        {
+            if (voteOptions == null) throw new ArgumentNullException(nameof(voteOptions));
+
+            return voteOptions.ConvertAll(x => x.ToVoteOptionView());
         }
     }
 }

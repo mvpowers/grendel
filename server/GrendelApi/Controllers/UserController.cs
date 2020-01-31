@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using GrendelApi.Services;
 using GrendelData.Users;
 using Microsoft.AspNetCore.Authorization;
@@ -19,14 +20,13 @@ namespace GrendelApi.Controllers
         
         [AllowAnonymous]
         [HttpPost("auth")]
-        public IActionResult Authenticate([FromBody]UserAuthRequest userAuthRequest)
+        public async Task<ActionResult<UserView>> Authenticate([FromBody]UserAuthRequest userAuthRequest)
         {
-            var user = _userService.Authenticate(userAuthRequest.Phone, userAuthRequest.Password);
+            var user = await _userService.Authenticate(userAuthRequest.Phone, userAuthRequest.Password);
 
-            if (user == null)
-                return BadRequest(new { message = "Phone or password is incorrect" });
+            if (user == null) return BadRequest(new { message = "Phone or password is incorrect" });
 
-            return Ok(user);
+            return Ok(user.ToUserView());
         }
     }
 }

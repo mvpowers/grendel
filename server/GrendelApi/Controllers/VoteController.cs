@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+using GrendelApi.Services;
 using GrendelData;
 using GrendelData.Votes;
 using Microsoft.AspNetCore.Mvc;
@@ -15,15 +16,17 @@ namespace GrendelApi.Controllers
     {
         private readonly ILogger<VoteController> _logger;
         private readonly GrendelContext _context;
+        private readonly IUserService _userService;
 
-        public VoteController(ILogger<VoteController> logger, GrendelContext context)
+        public VoteController(ILogger<VoteController> logger, GrendelContext context, IUserService userService)
         {
             _logger = logger;
             _context = context;
+            _userService = userService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<Vote>> ReadCurrentVotes()
+        [HttpGet("active")]
+        public async Task<ActionResult<VoteView>> ReadActiveVotes()
         {
             var activeQuestionId = await _context
                 .Questions
@@ -38,23 +41,23 @@ namespace GrendelApi.Controllers
                 .Where(x => x.QuestionId == activeQuestionId)
                 .ToListAsync();
 
-            if (votes == null)
-            {
-                return NotFound();
-            }
+            if (votes == null) return NotFound();
             
-            return Ok(votes);
+            return Ok(votes.ToVoteView());
         }
 
         [HttpPost]
-        public async Task<ActionResult<int>> CreateVote([FromBody]VoteCreateRequest request)
+        public async Task<ActionResult<VoteView>> CreateVote([FromBody]VoteCreateRequest request)
         {
             try
             {
-                var vote = request.ToVote();
+                var authHeader = Request.Headers["Authorization"];
+                var userId = await _userService.GetUserIdFromAuthHeader(authHeader); 
+                var vote = request.ToVote(userId);
+                
                 await _context.Votes.AddAsync(vote);
                 await _context.SaveChangesAsync();
-                return Ok(vote.Id);
+                return Ok(vote.ToVoteView());
             }
             catch (Exception e)
             {

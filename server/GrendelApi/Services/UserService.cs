@@ -34,7 +34,8 @@ namespace GrendelApi.Services
 
         public async Task<User> Authenticate(long phone, string password)
         {
-            var user = _context.Users.SingleOrDefault(x => x.Phone == phone && x.Password == password);
+            var user = await _context.Users
+                .FirstOrDefaultAsync(x => x.Phone == phone && x.Password == password);
 
             if (user == null) return null;
 
@@ -55,7 +56,7 @@ namespace GrendelApi.Services
 
             await _context.AddAsync(user);
 
-            return user.WithoutPassword();
+            return user;
         }
 
         public async Task<int> GetUserIdFromAuthHeader(string authHeader)

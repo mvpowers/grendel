@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using GrendelData.Questions;
 using GrendelData.Votes;
 using Microsoft.EntityFrameworkCore;
@@ -15,12 +14,16 @@ namespace GrendelData.Users
         public string Token { get; set; }
         public string PasswordResetToken { get; set; }
         public bool IsAdmin { get; set; }
-
-        [Range(999999999, 1000000000)]
         public long Phone { get; set; }
         
         public List<Vote> Votes { get; set; }
         public List<Question> Questions { get; set; }
+
+        public User()
+        {
+            Votes = new List<Vote>();
+            Questions = new List<Question>();
+        }
     }
 
     public class UserConfiguration : IEntityTypeConfiguration<User>

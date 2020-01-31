@@ -1,5 +1,3 @@
-using System;
-
 namespace GrendelData.Questions
 {
     public static class QuestionDataMapper
@@ -10,6 +8,16 @@ namespace GrendelData.Questions
             {
                 Inquiry = request.Inquiry,
                 UserId = userId
+            };
+        }
+
+        public static QuestionView ToQuestionView(this Question question)
+        {
+            return new QuestionView()
+            {
+                Id = question.Id,
+                Inquiry = question.Inquiry,
+                TimeAsked = question.TimeAsked
             };
         }
     }
