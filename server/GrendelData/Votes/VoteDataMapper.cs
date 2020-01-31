@@ -25,7 +25,8 @@ namespace GrendelData.Votes
             return new VoteView()
             {
                 Id = vote.Id,
-                Comment = vote.Comment
+                Comment = vote.Comment,
+                VoteOptionId = vote.VoteOptionId
             };
         }
         

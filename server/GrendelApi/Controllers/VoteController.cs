@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using GrendelApi.Services;
@@ -27,7 +28,7 @@ namespace GrendelApi.Controllers
         }
 
         [HttpGet("active")]
-        public async Task<ActionResult<VoteView>> ReadActiveVotes()
+        public async Task<ActionResult<List<VoteView>>> ReadActiveVotes()
         {
             var activeQuestionId = await _context
                 .Questions
