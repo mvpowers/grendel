@@ -54,10 +54,9 @@ namespace GrendelApi.Services
 
         public async Task<int> GetUserIdFromAuthHeader(string authHeader)
         {
-            var token = authHeader.Replace("Bearer ", "");
-            var userId = await _userRepository.GetUserIdFromJwt(token);
+            var user = await _userRepository.GetUserFromAuthHeader(authHeader);
             
-            return userId;
+            return user.Id;
         }
     }
 }

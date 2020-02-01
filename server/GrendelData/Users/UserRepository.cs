@@ -9,7 +9,7 @@ namespace GrendelData.Users
     public interface IUserRepository
     {
         Task<User> UpdateUser(User user);
-        Task<int> GetUserIdFromJwt(string jwt);
+        Task<User> GetUserFromAuthHeader(string authHeader);
         Task<User> GetUserFromPhonePassword(long phone, string password);
     }
     
@@ -41,22 +41,23 @@ namespace GrendelData.Users
             return user;
         }
 
-        public async Task<int> GetUserIdFromJwt(string jwt)
+        public async Task<User> GetUserFromAuthHeader(string authHeader)
         {
-            if (jwt == null) throw new ArgumentNullException(nameof(jwt));
+            if (authHeader == null) throw new ArgumentNullException(nameof(authHeader));
             
             try
             {
-                var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == jwt);
+                var token = authHeader.Replace("Bearer ", "");
+                var user = await _context.Users.FirstOrDefaultAsync(x => x.Token == token);
                 if (user == null) throw new NoNullAllowedException(nameof(user));
-                return user.Id;
+                return user;
             }
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
             }
 
-            return 0;
+            return null;
         }
 
         public async Task<User> GetUserFromPhonePassword(long phone, string password)
