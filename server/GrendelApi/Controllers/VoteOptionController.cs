@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-using GrendelData;
+using GrendelApi.Services;
 using GrendelData.VoteOptions;
-using GrendelData.Votes;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace GrendelApi.Controllers
@@ -17,22 +14,18 @@ namespace GrendelApi.Controllers
     public class VoteOptionController : ControllerBase
     {
         private readonly ILogger<VoteOptionController> _logger;
-        private readonly GrendelContext _context;
+        private readonly IVoteOptionService _voteOptionService;
 
-        public VoteOptionController(ILogger<VoteOptionController> logger, GrendelContext context)
+        public VoteOptionController(ILogger<VoteOptionController> logger, IVoteOptionService voteOptionService)
         {
             _logger = logger;
-            _context = context;
+            _voteOptionService = voteOptionService;
         }
 
         [HttpGet("active")]
         public async Task<ActionResult<List<VoteOptionView>>> ReadActiveVoteOptions()
         {
-            var voteOptions = await _context
-                .VoteOptions
-                .AsNoTracking()
-                .Where(x => x.IsActive == true)
-                .ToListAsync();
+            var voteOptions = await _voteOptionService.ReadActiveVoteOptions();
 
             if (voteOptions == null) return NotFound();
             
@@ -44,9 +37,7 @@ namespace GrendelApi.Controllers
         {
             try
             {
-                var voteOption = request.ToVoteOption();
-                await _context.VoteOptions.AddAsync(voteOption);
-                await _context.SaveChangesAsync();
+                var voteOption = await _voteOptionService.CreateVoteOption(request);
                 return Ok(voteOption.ToVoteOptionView());
             }
             catch (Exception e)

@@ -5,6 +5,7 @@ using GrendelCommon;
 using GrendelData;
 using GrendelData.Questions;
 using GrendelData.Users;
+using GrendelData.VoteOptions;
 using GrendelData.Votes;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -16,6 +17,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using VoteRepository = GrendelData.Votes.VoteRepository;
 
 namespace GrendelApi
 {
@@ -81,6 +83,9 @@ namespace GrendelApi
             
             services.AddScoped<IVoteService, VoteService>();
             services.AddScoped<IVoteRepository, VoteRepository>();
+            
+            services.AddScoped<IVoteOptionService, VoteOptionService>();
+            services.AddScoped<IVoteOptionRepository, VoteOptionRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

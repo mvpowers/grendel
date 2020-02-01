@@ -41,6 +41,8 @@ namespace GrendelData.Votes
                     .AsNoTracking()
                     .Where(x => x.QuestionId == activeQuestionId)
                     .ToListAsync();
+
+                return votes;
             }
             catch (Exception e)
             {
