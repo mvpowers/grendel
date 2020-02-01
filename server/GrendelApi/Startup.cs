@@ -5,6 +5,7 @@ using GrendelCommon;
 using GrendelData;
 using GrendelData.Questions;
 using GrendelData.Users;
+using GrendelData.Votes;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -74,8 +75,12 @@ namespace GrendelApi
             // configure DI for application services
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
+            
             services.AddScoped<IQuestionService, QuestionService>();
             services.AddScoped<IQuestionRepository, QuestionRepository>();
+            
+            services.AddScoped<IVoteService, VoteService>();
+            services.AddScoped<IVoteRepository, VoteRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

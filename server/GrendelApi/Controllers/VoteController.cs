@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using GrendelApi.Services;
-using GrendelData;
 using GrendelData.Votes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace GrendelApi.Controllers
@@ -19,31 +16,18 @@ namespace GrendelApi.Controllers
     public class VoteController : ControllerBase
     {
         private readonly ILogger<VoteController> _logger;
-        private readonly GrendelContext _context;
-        private readonly IUserService _userService;
+        private readonly IVoteService _voteService;
 
-        public VoteController(ILogger<VoteController> logger, GrendelContext context, IUserService userService)
+        public VoteController(ILogger<VoteController> logger, IVoteService voteService)
         {
             _logger = logger;
-            _context = context;
-            _userService = userService;
+            _voteService = voteService;
         }
 
         [HttpGet("active")]
         public async Task<ActionResult<List<VoteView>>> ReadActiveVotes()
         {
-            var activeQuestionId = await _context
-                .Questions
-                .AsNoTracking()
-                .Where(x => x.IsActive == true)
-                .Select(x => x.Id)
-                .FirstOrDefaultAsync();
-            
-            var votes = await _context
-                .Votes
-                .AsNoTracking()
-                .Where(x => x.QuestionId == activeQuestionId)
-                .ToListAsync();
+            var votes = await _voteService.ReadActiveVotes();
 
             if (votes == null) return NotFound();
             
@@ -56,11 +40,8 @@ namespace GrendelApi.Controllers
             try
             {
                 var authHeader = Request.Headers["Authorization"];
-                var userId = await _userService.GetUserIdFromAuthHeader(authHeader); 
-                var vote = request.ToVote(userId);
+                var vote = await _voteService.CreateVote(authHeader, request);
                 
-                await _context.Votes.AddAsync(vote);
-                await _context.SaveChangesAsync();
                 return Ok(vote.ToVoteView());
             }
             catch (Exception e)

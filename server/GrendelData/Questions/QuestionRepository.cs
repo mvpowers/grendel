@@ -9,7 +9,7 @@ namespace GrendelData.Questions
     public interface IQuestionRepository
     {
         Task<Question> ReadActiveQuestion();
-        Task<Question> CreateQuestion(User user, QuestionCreateRequest question);
+        Task<Question> CreateQuestion(User user, QuestionCreateRequest questionCreateRequest);
     }
     
     public class QuestionRepository : IQuestionRepository
