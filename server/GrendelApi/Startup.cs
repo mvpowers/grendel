@@ -17,7 +17,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using VoteRepository = GrendelData.Votes.VoteRepository;
 
 namespace GrendelApi
 {
