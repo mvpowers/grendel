@@ -14,6 +14,7 @@ module.exports = {
     'import/extensions': 'off',
     'vue/html-closing-bracket-newline': 'off',
     'import/prefer-default-export': 'off',
+    'no-mixed-operators': 'off',
   },
   parserOptions: {
     parser: 'babel-eslint',

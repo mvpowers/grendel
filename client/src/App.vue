@@ -13,10 +13,7 @@
         </span>
       </VToolbarTitle>
       <VSpacer />
-      <VBtn
-        flat
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank">
+      <VBtn flat>
         <VIcon>more_vert</VIcon>
       </VBtn>
     </VToolbar>

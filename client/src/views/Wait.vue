@@ -1,40 +1,62 @@
 <template>
   <VContainer class="justify-center align-center">
-    <div>{{ timerHours }}:{{ timerMinutes }}:{{ timerSeconds }}</div>
-    <div class="headline">
-      until judgement time
+    <div class="title text-xs-center my-3">
+      {{ question.inquiry }}
+    </div>
+    <div class="headline text-xs-center">
+      {{ `${timerHours}:${timerMinutes}:${timerSeconds} until judgement time` }}
     </div>
   </VContainer>
 </template>
 
 <script>
+import { QuestionRequests } from '../requests';
+
 export default {
   name: 'Wait',
   data: () => ({
     expiration: null,
     countdown: null,
+    question: {
+      id: 0,
+      inquiry: '',
+      timeVotingExpires: null,
+    },
   }),
   computed: {
     timerHours() {
-      return Math.floor(this.countdown % (1000 * 60 * 60 * 24) / (1000 * 60 * 60));
+      const val = Math.floor(this.countdown % (1000 * 60 * 60 * 24) / (1000 * 60 * 60));
+      return this.formatTwoDigitNumber(val);
     },
     timerMinutes() {
-      return Math.floor(this.countdown % (1000 * 60 * 60) / (1000 * 60));
+      const val = Math.floor(this.countdown % (1000 * 60 * 60) / (1000 * 60));
+      return this.formatTwoDigitNumber(val);
     },
     timerSeconds() {
-      return Math.floor((this.countdown % (1000 * 60)) / 1000);
+      const val = Math.floor((this.countdown % (1000 * 60)) / 1000);
+      return this.formatTwoDigitNumber(val);
     },
   },
-  mounted() {
-    const expiration = new Date();
-    expiration.setHours(expiration.getHours() + 2);
-
-    this.expiration = expiration;
+  async mounted() {
+    await this.readActiveQuestion();
 
     setInterval(() => {
       const now = Date.now();
-      this.countdown = this.expiration - now;
+      this.countdown = this.question.timeVotingExpires - now;
     }, 100);
+  },
+  methods: {
+    formatTwoDigitNumber(val) {
+      return val < 10 ? `0${val}` : val;
+    },
+    async readActiveQuestion() {
+      try {
+        const { data } = await QuestionRequests.readActiveQuestion();
+        this.question = { ...data, timeVotingExpires: Date.parse(data.timeVotingExpires) };
+      } catch (e) {
+        console.error(e);
+      }
+    },
   },
 };
 </script>

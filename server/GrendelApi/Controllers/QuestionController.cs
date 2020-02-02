@@ -13,10 +13,12 @@ namespace GrendelApi.Controllers
     public class QuestionController : ControllerBase
     {
         private readonly IQuestionService _questionService;
+        private readonly IVoteService _voteService;
 
-        public QuestionController(IQuestionService questionService)
+        public QuestionController(IQuestionService questionService, IVoteService voteService)
         {
             _questionService = questionService;
+            _voteService = voteService;
         }
 
         
@@ -24,8 +26,10 @@ namespace GrendelApi.Controllers
         public async Task<ActionResult<QuestionView>> ReadActiveQuestion()
         {
             var question = await _questionService.ReadActiveQuestion();
+            var voteSessionDurationMinutes = _voteService.ReadVoteSessionDurationMinutes();
+            var questionView = question.ToQuestionView(voteSessionDurationMinutes);
 
-            return Ok(question.ToQuestionView());
+            return Ok(questionView);
         }
 
         [HttpPost]

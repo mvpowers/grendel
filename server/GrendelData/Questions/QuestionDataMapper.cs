@@ -11,13 +11,14 @@ namespace GrendelData.Questions
             };
         }
 
-        public static QuestionView ToQuestionView(this Question question)
+        public static QuestionView ToQuestionView(this Question question, int voteSessionDurationMinutes)
         {
             return new QuestionView()
             {
                 Id = question.Id,
                 Inquiry = question.Inquiry,
-                TimeAsked = question.TimeAsked
+                TimeAsked = question.TimeAsked,
+                TimeVotingExpires = question.TimeAsked?.AddMinutes(voteSessionDurationMinutes)
             };
         }
     }

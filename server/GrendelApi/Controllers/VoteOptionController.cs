@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using GrendelApi.Services;
 using GrendelData.VoteOptions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
 namespace GrendelApi.Controllers
 {
+    [Authorize]
     [ApiController]
     [ApiVersion("1.0")]
     [Route( "api/v{version:apiVersion}/[controller]" )]
