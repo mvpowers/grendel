@@ -74,6 +74,7 @@
 
 <script>
 export default {
+  name: 'RegisterForm',
   data: () => ({
     formName: '',
     formPhone: '',

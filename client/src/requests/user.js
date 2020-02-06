@@ -11,4 +11,9 @@ export class UserRequests {
     const url = `${API_CONTROLLER}/auth`;
     return nonAuthRequestInstance.post(url, userAuthRequest);
   }
+
+  static createUserResetToken(userTokenRequest) {
+    const url = `${API_CONTROLLER}/reset-token`;
+    return nonAuthRequestInstance.post(url, userTokenRequest);
+  }
 }

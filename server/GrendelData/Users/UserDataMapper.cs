@@ -14,7 +14,8 @@ namespace GrendelData.Users
                 Name = user.Name,
                 Phone = user.Phone,
                 Token = user.Token,
-                IsAdmin = user.IsAdmin
+                IsAdmin = user.IsAdmin,
+                PasswordResetToken = user.PasswordResetToken
             };
         }
     }

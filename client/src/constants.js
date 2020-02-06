@@ -3,6 +3,7 @@ export const routes = {
   VOTE: 'vote',
   WAIT: 'wait',
   RESULT: 'result',
+  RESET: 'reset',
 };
 
 export const localStorageKeys = {

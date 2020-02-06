@@ -14,6 +14,8 @@ namespace GrendelApi.Services
     {
         Task<User> Authenticate(long phone, string password);
         Task<int> GetUserIdFromAuthHeader(string authHeader);
+        Task<User> CreateUserPasswordResetToken(long phone);
+        // Task<User> UpdateUserPassword(string passwordResetToken, string password);
     }
     public class UserService : IUserService
     {
@@ -37,7 +39,7 @@ namespace GrendelApi.Services
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[] 
+                Subject = new ClaimsIdentity(new[] 
                 {
                     new Claim(ClaimTypes.Name, user.Id.ToString())
                 }),
@@ -58,5 +60,36 @@ namespace GrendelApi.Services
             
             return user.Id;
         }
+
+        public async Task<User> CreateUserPasswordResetToken(long phone)
+        {
+            var user = await _userRepository.GetUserFromPhone(phone);
+
+            if (user == null) return null;
+
+            // generate jwt token
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[] 
+                {
+                    new Claim(ClaimTypes.Name, user.Id.ToString())
+                }),
+                Expires = DateTime.UtcNow.AddDays(6),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            user.PasswordResetToken = tokenHandler.WriteToken(token);
+
+            await _userRepository.UpdateUser(user);
+
+            return user;
+        }
+        
+        // Task<User> UpdateUserPassword(string passwordResetToken, string password
+        // {
+        //     
+        // }
     }
 }

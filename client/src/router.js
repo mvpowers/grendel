@@ -12,27 +12,40 @@ const router = new Router({
       path: '/',
       name: routes.HOME,
       component: () => import('./views/Home'),
+      meta: { requiresAuth: false },
     },
     {
       path: '/vote',
       name: routes.VOTE,
       component: () => import('./views/Vote'),
+      meta: { requiresAuth: true },
     },
     {
       path: '/wait',
       name: routes.WAIT,
       component: () => import('./views/Wait'),
+      meta: { requiresAuth: true },
     },
     {
       path: '/result',
       name: routes.RESULT,
       component: () => import('./views/Result'),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/reset',
+      name: routes.RESET,
+      component: () => import('./views/Reset'),
+      meta: { requiresAuth: false },
     },
   ],
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.name !== routes.HOME && !localStorage.getItem(localStorageKeys.AUTH_TOKEN)) {
+  const { requiresAuth } = to.meta;
+  const authToken = localStorage.getItem(localStorageKeys.AUTH_TOKEN);
+
+  if (requiresAuth && !authToken) {
     next({ name: routes.HOME });
   } else {
     next();

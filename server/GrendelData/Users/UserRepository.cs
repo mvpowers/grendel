@@ -11,6 +11,7 @@ namespace GrendelData.Users
         Task<User> UpdateUser(User user);
         Task<User> GetUserFromAuthHeader(string authHeader);
         Task<User> GetUserFromPhonePassword(long phone, string password);
+        Task<User> GetUserFromPhone(long phone);
     }
     
     public class UserRepository : IUserRepository
@@ -69,6 +70,27 @@ namespace GrendelData.Users
             {
                 var user = await _context.Users
                     .FirstOrDefaultAsync(x => x.Phone == phone && x.Password == password);
+                
+                if (user == null) throw new NoNullAllowedException(nameof(user));
+
+                return user;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+            }
+
+            return null;
+        }
+        
+        public async Task<User> GetUserFromPhone(long phone)
+        {
+            if (phone <= 0) throw new ArgumentOutOfRangeException(nameof(phone));
+
+            try
+            {
+                var user = await _context.Users
+                    .FirstOrDefaultAsync(x => x.Phone == phone);
                 
                 if (user == null) throw new NoNullAllowedException(nameof(user));
 
