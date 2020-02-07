@@ -41,14 +41,19 @@ namespace GrendelApi.Controllers
             return Ok(user.ToUserView());
         }
         
-        // [AllowAnonymous]
-        // [HttpPost("password-reset")]
-        // public async Task<ActionResult> ResetUserPassword([FromBody] UserPasswordResetRequest resetRequest)
-        // {
-        //     if (resetRequest.NewPassword != resetRequest.NewPasswordConfirm)
-        //         return BadRequest(new { message = "Password confirmation does not match" });
-        //     
-        //     var user = 
-        // }
+        [AllowAnonymous]
+        [HttpPost("password-reset")]
+        public async Task<ActionResult> ResetUserPassword([FromBody] UserPasswordResetRequest resetRequest)
+        {
+            if(string.IsNullOrEmpty(resetRequest.UserResetToken))
+                return BadRequest(new { message = "Reset token cannot be empty" });
+                
+            if (resetRequest.NewPassword != resetRequest.NewPasswordConfirm)
+                return BadRequest(new { message = "Password confirmation does not match" });
+
+            var user = await _userService.UpdateUserPassword(resetRequest.UserResetToken, resetRequest.NewPassword);
+
+            return Ok(user.ToUserView());
+        }
     }
 }

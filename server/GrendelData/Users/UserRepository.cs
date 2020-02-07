@@ -1,5 +1,6 @@
 using System;
 using System.Data;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -12,6 +13,7 @@ namespace GrendelData.Users
         Task<User> GetUserFromAuthHeader(string authHeader);
         Task<User> GetUserFromPhonePassword(long phone, string password);
         Task<User> GetUserFromPhone(long phone);
+        Task<User> GetUserFromPasswordResetToken(string passwordResetToken);
     }
     
     public class UserRepository : IUserRepository
@@ -91,6 +93,27 @@ namespace GrendelData.Users
             {
                 var user = await _context.Users
                     .FirstOrDefaultAsync(x => x.Phone == phone);
+                
+                if (user == null) throw new NoNullAllowedException(nameof(user));
+
+                return user;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+            }
+
+            return null;
+        }
+        
+        public async Task<User> GetUserFromPasswordResetToken(string passwordResetToken)
+        {
+            if (passwordResetToken == null) throw new ArgumentNullException(nameof(passwordResetToken));
+
+            try
+            {
+                var user = await _context.Users
+                    .FirstOrDefaultAsync(x => x.PasswordResetToken == passwordResetToken);
                 
                 if (user == null) throw new NoNullAllowedException(nameof(user));
 
