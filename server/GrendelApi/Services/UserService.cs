@@ -57,45 +57,18 @@ namespace GrendelApi.Services
 
             if (user == null) return null;
 
-            // generate jwt token
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(new[] { new Claim(ClaimTypes.Name, user.Id.ToString()) }),
-                Expires = DateTime.UtcNow.AddMinutes(10),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            user.PasswordResetToken = tokenHandler.WriteToken(token);
+            var token = Guid.NewGuid();
+            user.PasswordResetToken = token.ToString();
+            user.Password = null;
             user.Token = null;
 
             await _userRepository.UpdateUser(user);
 
             return user;
         }
-
-        private SecurityToken ValidateJwtToken(string token)
-        {
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-            var tokenValidatorParameters = new TokenValidationParameters()
-            {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(key),
-                ValidateIssuer = false,
-                ValidateAudience = false,
-                ClockSkew = TimeSpan.Zero
-            };
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            tokenHandler.ValidateToken(token, tokenValidatorParameters, out var validatedToken);
-            return validatedToken;
-        }
         
         public async Task<User> UpdateUserPassword(string passwordResetToken, string password)
         {
-            ValidateJwtToken(passwordResetToken);
-            
             var user = await _userRepository.GetUserFromPasswordResetToken(passwordResetToken);
 
             if (user == null) return null;

@@ -21,12 +21,12 @@
                   slot="activator"
                   icon
                   large
-                  @click="$emit('toggleHasLogin')">
+                  @click="$router.push({ name: resetRoute })">
                   <VIcon large>
-                    person_add
+                    report
                   </VIcon>
                 </VBtn>
-                <span>Register</span>
+                <span>Forgot Password</span>
               </VTooltip>
             </VToolbar>
             <VCardText>
@@ -35,9 +35,9 @@
                 @submit.prevent="authenticateUser">
                 <VTextField
                   v-model="phone"
-                  prepend-icon="person"
-                  name="login"
-                  label="Login"
+                  prepend-icon="phone"
+                  name="phone"
+                  label="Phone"
                   type="phone" />
                 <VTextField
                   id="password"
@@ -74,6 +74,7 @@ export default {
     drawer: null,
     phone: '',
     password: '',
+    resetRoute: routes.RESET,
   }),
   methods: {
     async authenticateUser() {

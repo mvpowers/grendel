@@ -1,5 +1,35 @@
 <template>
   <VApp>
+
+    <VNavigationDrawer
+      v-model="drawer"
+      fixed
+      app>
+      <VList>
+
+        <VListTile @click="submitQuestion">
+          <VListTileAction>
+            <VIcon>add_circle</VIcon>
+          </VListTileAction>
+          <VListTileContent>
+            <VListTileTitle>Submit a Question</VListTileTitle>
+          </VListTileContent>
+        </VListTile>
+
+        <VDivider />
+
+        <VListTile @click="signout">
+          <VListTileAction>
+            <VIcon>exit_to_app</VIcon>
+          </VListTileAction>
+          <VListTileContent>
+            <VListTileTitle>Signout</VListTileTitle>
+          </VListTileContent>
+        </VListTile>
+
+      </VList>
+    </VNavigationDrawer>
+
     <VToolbar
       v-if="!ignoredToolbarRoutes.includes($router.currentRoute.name)"
       app>
@@ -13,9 +43,7 @@
         </span>
       </VToolbarTitle>
       <VSpacer />
-      <VBtn flat>
-        <VIcon>more_vert</VIcon>
-      </VBtn>
+      <VToolbarSideIcon @click.stop="drawer = !drawer" />
     </VToolbar>
 
     <VContent>
@@ -25,10 +53,22 @@
 </template>
 
 <script>
+import { routes } from './constants';
+
 export default {
   name: 'App',
   data: () => ({
-    ignoredToolbarRoutes: ['home'],
+    ignoredToolbarRoutes: [routes.HOME, routes.RESET],
+    drawer: null,
   }),
+  methods: {
+    signout() {
+      localStorage.clear();
+      this.$router.push({ name: routes.HOME });
+    },
+    submitQuestion() {
+      console.log('submit question');
+    },
+  },
 };
 </script>

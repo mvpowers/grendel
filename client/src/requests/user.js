@@ -17,7 +17,7 @@ export class UserRequests {
     return nonAuthRequestInstance.post(url, userTokenRequest);
   }
 
-  static getUserFromResetToken(userResetToken){
+  static getUserFromResetToken(userResetToken) {
     const url = `${API_CONTROLLER}/reset-token/${userResetToken}`;
     return nonAuthRequestInstance.get(url);
   }
