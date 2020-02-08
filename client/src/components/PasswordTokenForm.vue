@@ -21,7 +21,8 @@
       <VBtn
         color="primary"
         type="submit"
-        form="reset-form">
+        form="reset-form"
+        @click="createUserResetToken">
         Send Reset Link
       </VBtn>
     </VCardActions>
@@ -43,7 +44,7 @@ export default {
           phone: parseInt(this.formPhone, 10),
         };
         const { data } = await UserRequests.createUserResetToken(userTokenRequest);
-        alert(data.passwordResetToken);
+        console.info('success', data);
       } catch (e) {
         console.error(e);
       }

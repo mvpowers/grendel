@@ -13,9 +13,9 @@ namespace GrendelApi.Services
     public interface IUserService
     {
         Task<User> Authenticate(long phone, string password);
-        Task<int> GetUserIdFromAuthHeader(string authHeader);
         Task<User> CreateUserPasswordResetToken(long phone);
         Task<User> UpdateUserPassword(string passwordResetToken, string password);
+        Task<User> GetUserFromResetToken(string passwordResetToken);
     }
     public class UserService : IUserService
     {
@@ -49,13 +49,6 @@ namespace GrendelApi.Services
             await _userRepository.UpdateUser(user);
 
             return user;
-        }
-
-        public async Task<int> GetUserIdFromAuthHeader(string authHeader)
-        {
-            var user = await _userRepository.GetUserFromAuthHeader(authHeader);
-            
-            return user.Id;
         }
 
         public async Task<User> CreateUserPasswordResetToken(long phone)
@@ -104,11 +97,21 @@ namespace GrendelApi.Services
             ValidateJwtToken(passwordResetToken);
             
             var user = await _userRepository.GetUserFromPasswordResetToken(passwordResetToken);
+
+            if (user == null) return null;
+            
             user.Password = password;
             user.PasswordResetToken = null;
             user.Token = null;
             
             await _userRepository.UpdateUser(user);
+            return user;
+        }
+
+        public async Task<User> GetUserFromResetToken(string passwordResetToken)
+        {
+            var user = await _userRepository.GetUserFromPasswordResetToken(passwordResetToken);
+
             return user;
         }
     }

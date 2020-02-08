@@ -25,7 +25,7 @@ namespace GrendelApi.Controllers
         {
             var user = await _userService.Authenticate(userAuthRequest.Phone, userAuthRequest.Password);
 
-            if (user == null) return BadRequest(new { message = "Phone or password is incorrect" });
+            if (user == null) return NotFound();
 
             return Ok(user.ToUserView());
         }
@@ -36,22 +36,35 @@ namespace GrendelApi.Controllers
         {
             var user = await _userService.CreateUserPasswordResetToken(userTokenRequest.Phone);
             
-            if (user == null) return BadRequest(new { message = "Phone is incorrect" });
+            if (user == null) return NotFound();
 
             return Ok(user.ToUserView());
         }
         
         [AllowAnonymous]
         [HttpPost("password-reset")]
-        public async Task<ActionResult> ResetUserPassword([FromBody] UserPasswordResetRequest resetRequest)
+        public async Task<ActionResult<UserView>> ResetUserPassword([FromBody] UserPasswordResetRequest resetRequest)
         {
-            if(string.IsNullOrEmpty(resetRequest.UserResetToken))
-                return BadRequest(new { message = "Reset token cannot be empty" });
-                
             if (resetRequest.NewPassword != resetRequest.NewPasswordConfirm)
-                return BadRequest(new { message = "Password confirmation does not match" });
-
+                return BadRequest(new { message = "New password and confirmation does not match" });
+            
             var user = await _userService.UpdateUserPassword(resetRequest.UserResetToken, resetRequest.NewPassword);
+            
+            if (user == null) return NotFound();
+
+            return Ok(user.ToUserView());
+        }
+
+        [AllowAnonymous]
+        [HttpGet(("reset-token/{token}"))]
+        public async Task<ActionResult<UserView>> GetUserFromResetToken(string token)
+        {
+            if (string.IsNullOrEmpty(token))
+                return BadRequest(new {message = "Token cannot be empty"});
+
+            var user = await _userService.GetUserFromResetToken(token);
+
+            if (user == null) return NotFound();
 
             return Ok(user.ToUserView());
         }
