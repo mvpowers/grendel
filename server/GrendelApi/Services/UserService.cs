@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GrendelData;
 using GrendelData.Users;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -30,9 +31,13 @@ namespace GrendelApi.Services
 
         public async Task<User> Authenticate(long phone, string password)
         {
-            var user = await _userRepository.GetUserFromPhonePassword(phone, password);
-
+            var user = await _userRepository.GetUserFromPhone(phone);
             if (user == null) return null;
+            
+            // verify password
+            var hasher = new PasswordHasher<string>();
+            var userVerified = hasher.VerifyHashedPassword(user.Name, user.Password, password);
+            if (userVerified == PasswordVerificationResult.Failed) return null;
 
             // generate jwt token
             var tokenHandler = new JwtSecurityTokenHandler();
@@ -73,7 +78,10 @@ namespace GrendelApi.Services
 
             if (user == null) return null;
             
-            user.Password = password;
+            var hasher = new PasswordHasher<string>();
+            var hashedPassword = hasher.HashPassword(user.Name, password);
+            
+            user.Password = hashedPassword;
             user.PasswordResetToken = null;
             user.Token = null;
             
