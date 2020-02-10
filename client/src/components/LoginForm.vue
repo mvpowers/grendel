@@ -23,7 +23,7 @@
                   large
                   @click="$router.push({ name: resetRoute })">
                   <VIcon large>
-                    report
+                    help_outline
                   </VIcon>
                 </VBtn>
                 <span>Forgot Password</span>

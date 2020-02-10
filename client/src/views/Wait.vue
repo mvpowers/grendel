@@ -47,7 +47,8 @@ export default {
   },
   methods: {
     formatTwoDigitNumber(val) {
-      return val < 10 ? `0${val}` : val;
+      const minZero = Math.max(0, val);
+      return minZero < 10 ? `0${minZero}` : minZero;
     },
     async readActiveQuestion() {
       try {

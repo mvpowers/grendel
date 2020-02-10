@@ -30,7 +30,7 @@ namespace GrendelData.Questions
                 var question = await _context
                     .Questions
                     .AsNoTracking()
-                    .FirstOrDefaultAsync(x => x.IsActive);
+                    .FirstOrDefaultAsync(x => x.IsActive == true);
 
                 return question;
             }

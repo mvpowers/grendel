@@ -6,7 +6,9 @@
       <VToolbarTitle>Password Reset</VToolbarTitle>
     </VToolbar>
     <VCardText>
-      <VForm @submit.prevent="createUserResetToken">
+      <VForm
+        @submit.prevent="createUserResetToken"
+        @cancel="goBack">
         <VTextField
           id="reset-form"
           v-model="formPhone"
@@ -17,6 +19,13 @@
       </VForm>
     </VCardText>
     <VCardActions>
+      <VBtn
+        color="secondary"
+        type="cancel"
+        form="reset-form"
+        @click="goBack">
+        Back
+      </VBtn>
       <VSpacer />
       <VBtn
         color="primary"
@@ -31,6 +40,7 @@
 
 <script>
 import { UserRequests } from '../requests';
+import { routes } from '../constants';
 
 export default {
   name: 'PasswordTokenForm',
@@ -44,15 +54,21 @@ export default {
           phone: parseInt(this.formPhone, 10),
         };
         const { data } = await UserRequests.createUserResetToken(userTokenRequest);
-        console.info('success', data);
+        this.$swal({
+          icon: 'info',
+          title: 'Password Recovery Sent',
+          text: 'Please follow the link sent to your phone to update your password',
+          showConfirmButton: true,
+        });
+        this.$router.push({ name: routes.HOME });
+        console.info('TODO: remove console', data);
       } catch (e) {
         console.error(e);
       }
     },
+    goBack() {
+      this.$router.push({ name: routes.HOME });
+    },
   },
 };
 </script>
-
-<style scoped>
-
-</style>

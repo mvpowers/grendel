@@ -8,5 +8,6 @@ namespace GrendelData.Users
         public string Token { get; set; }
         public bool IsAdmin { get; set; }
         public string PasswordResetToken { get; set; }
+        public bool? HasActiveVote { get; set; }
     }
 }

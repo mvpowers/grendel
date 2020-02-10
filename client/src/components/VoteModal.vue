@@ -83,6 +83,7 @@ export default {
         };
 
         await VoteRequests.createVote(voteCreateRequest);
+        this.$toast.success('Vote submitted');
         router.push({ name: routes.WAIT });
       } catch (e) {
         console.error(e);

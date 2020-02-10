@@ -1,12 +1,13 @@
 <template>
   <VApp>
-
     <VNavigationDrawer
       v-model="drawer"
       fixed
+      clipped
+      disable-resize-watcher
+      disable-route-watcher
       app>
       <VList>
-
         <VListTile @click="submitQuestion">
           <VListTileAction>
             <VIcon>add_circle</VIcon>
@@ -15,9 +16,7 @@
             <VListTileTitle>Submit a Question</VListTileTitle>
           </VListTileContent>
         </VListTile>
-
         <VDivider />
-
         <VListTile @click="signout">
           <VListTileAction>
             <VIcon>exit_to_app</VIcon>
@@ -26,7 +25,6 @@
             <VListTileTitle>Signout</VListTileTitle>
           </VListTileContent>
         </VListTile>
-
       </VList>
     </VNavigationDrawer>
 
@@ -59,16 +57,24 @@ export default {
   name: 'App',
   data: () => ({
     ignoredToolbarRoutes: [routes.HOME, routes.RESET],
-    drawer: null,
+    drawer: false,
   }),
   methods: {
     signout() {
       localStorage.clear();
+      this.drawer = false;
+      this.$toast.info('Goodbye');
       this.$router.push({ name: routes.HOME });
     },
     submitQuestion() {
-      console.log('submit question');
+      this.$toast.info('Submit a question');
     },
   },
 };
 </script>
+
+<style>
+  .swal2-modal, .v-snack {
+    font-family: 'Roboto', sans-serif !important;
+  }
+</style>
