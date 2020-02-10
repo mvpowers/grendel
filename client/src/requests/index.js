@@ -18,6 +18,7 @@ export const errorAlerts = (error) => {
 
     case 401:
       Swal.fire('Unauthorized', 'Please login to continue', 'error');
+      localStorage.clear();
       router.push({ name: routes.HOME });
       break;
 

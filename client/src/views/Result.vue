@@ -76,6 +76,9 @@ export default {
       });
     },
   },
+  async beforeMount() {
+    await this.routeVoteFlow();
+  },
   async mounted() {
     await this.readActiveVoteOptions();
     await this.readActiveQuestion();

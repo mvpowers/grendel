@@ -37,6 +37,9 @@ export default {
       return this.formatTwoDigitNumber(val);
     },
   },
+  async beforeMount() {
+    await this.routeVoteFlow();
+  },
   async mounted() {
     await this.readActiveQuestion();
 

@@ -19,7 +19,7 @@
         <VSpacer />
         <VCardActions>
           <VBtn
-            color="blue darken-1"
+            color="secondary"
             flat="flat"
             @click="handleCancel">
             Cancel
