@@ -64,7 +64,6 @@ namespace GrendelApi.Services
 
             var token = Guid.NewGuid();
             user.PasswordResetToken = token.ToString();
-            user.Password = null;
             user.Token = null;
 
             await _userRepository.UpdateUser(user);

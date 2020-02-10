@@ -1,8 +1,11 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using GrendelApi.Exceptions;
 using GrendelApi.Services;
 using GrendelData.Questions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace GrendelApi.Controllers
 {
@@ -12,11 +15,13 @@ namespace GrendelApi.Controllers
     [Route( "api/v{version:apiVersion}/[controller]" )]
     public class QuestionController : ControllerBase
     {
+        private readonly ILogger<QuestionController> _logger;
         private readonly IQuestionService _questionService;
         private readonly IVoteService _voteService;
 
-        public QuestionController(IQuestionService questionService, IVoteService voteService)
+        public QuestionController(ILogger<QuestionController> logger, IQuestionService questionService, IVoteService voteService)
         {
+            _logger = logger;
             _questionService = questionService;
             _voteService = voteService;
         }
@@ -25,20 +30,40 @@ namespace GrendelApi.Controllers
         [HttpGet("active")]
         public async Task<ActionResult<QuestionView>> ReadActiveQuestion()
         {
-            var question = await _questionService.ReadActiveQuestion();
-            var voteSessionDurationMinutes = _voteService.ReadVoteSessionDurationMinutes();
-            var questionView = question.ToQuestionView(voteSessionDurationMinutes);
-
-            return Ok(questionView);
+            try
+            {
+                var question = await _questionService.ReadActiveQuestion();
+                if (question == null) throw new ReadEntityException(typeof(Question));
+            
+                var voteSessionDurationMinutes = _voteService.ReadVoteSessionDurationMinutes();
+                var questionView = question.ToQuestionView(voteSessionDurationMinutes);
+            
+                return Ok(questionView);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return UnprocessableEntity(new ErrorResponse(e.Message));
+            }
         }
 
         [HttpPost]
         public async Task<ActionResult> CreateQuestion([FromBody]QuestionCreateRequest request)
         {
-            var authHeader = Request.Headers["Authorization"];
-            var question = await _questionService.CreateQuestion(authHeader, request);
+            try
+            {
+                var authHeader = Request.Headers["Authorization"];
+                
+                var question = await _questionService.CreateQuestion(authHeader, request);
+                if (question == null) throw new CreateEntityException(typeof(Question));
             
-            return Ok(question.Id);
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return UnprocessableEntity(new ErrorResponse(e.Message));
+            }
         }
     }
 }

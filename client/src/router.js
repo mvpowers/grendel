@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import Swal from 'sweetalert2';
 import { localStorageKeys, routes } from './constants';
 
 Vue.use(Router);
@@ -46,6 +47,7 @@ router.beforeEach((to, from, next) => {
   const authToken = localStorage.getItem(localStorageKeys.AUTH_TOKEN);
 
   if (requiresAuth && !authToken) {
+    Swal.fire('Unauthorized', 'Please login to continue', 'error');
     next({ name: routes.HOME });
   } else {
     next();

@@ -84,7 +84,6 @@ export default {
 
         await VoteRequests.createVote(voteCreateRequest);
         router.push({ name: routes.WAIT });
-        // todo handle 400
       } catch (e) {
         console.error(e);
       }

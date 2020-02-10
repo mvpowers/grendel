@@ -10,6 +10,7 @@
   "dependencies": {
     "axios": "^0.19.2",
     "chart.js": "^2.7.3",
+    "sweetalert2": "^9.7.2",
     "vue": "^2.6.11",
     "vue-chartjs": "^3.4.0",
     "vue-router": "^3.0.1",

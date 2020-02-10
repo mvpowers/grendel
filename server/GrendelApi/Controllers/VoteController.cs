@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using GrendelApi.Exceptions;
 using GrendelApi.Services;
 using GrendelData.Votes;
 using Microsoft.AspNetCore.Authorization;
@@ -27,11 +28,18 @@ namespace GrendelApi.Controllers
         [HttpGet("active")]
         public async Task<ActionResult<List<VoteView>>> ReadActiveVotes()
         {
-            var votes = await _voteService.ReadActiveVotes();
-
-            if (votes == null) return NotFound();
+            try
+            {
+                var votes = await _voteService.ReadActiveVotes();
+                if (votes == null) throw new ReadEntityException(typeof(Vote));
             
-            return Ok(votes.ToVoteView());
+                return Ok(votes.ToVoteView());
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return UnprocessableEntity(new ErrorResponse(e.Message));
+            }
         }
 
         [HttpPost]
@@ -40,14 +48,16 @@ namespace GrendelApi.Controllers
             try
             {
                 var authHeader = Request.Headers["Authorization"];
+                
                 var vote = await _voteService.CreateVote(authHeader, request);
+                if (vote == null) throw new CreateEntityException(typeof(Vote));
                 
                 return Ok(vote.ToVoteView());
             }
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
-                return BadRequest(e.Message);
+                return UnprocessableEntity(new ErrorResponse(e.Message));
             }
         }
     }

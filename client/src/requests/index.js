@@ -1,11 +1,32 @@
 import axios from 'axios';
+import Swal from 'sweetalert2';
 import { localStorageKeys, routes } from '../constants';
-import router from '@/router';
+import router from '../router';
 
 export { QuestionRequests } from './question';
 export { VoteOptionRequests } from './voteOption';
 export { VoteRequests } from './vote';
 export { UserRequests } from './user';
+
+const errorAlerts = (error) => {
+  switch (error.response.status) {
+    case 400:
+      Swal.fire('Bad Request', error.response.data.message, 'error');
+      break;
+
+    case 401:
+      Swal.fire('Unauthorized', 'Please login to continue', 'error');
+      router.push({ name: routes.HOME });
+      break;
+
+    case 422:
+      Swal.fire('Unprocessable Entity ', error.response.data.message, 'error');
+      break;
+
+    default:
+      Swal.fire('Server Error ', error.response.data.message, 'error');
+  }
+};
 
 const requestInstance = axios.create({
   baseURL: `${process.env.VUE_APP_API_URL}/api/${process.env.VUE_APP_API_VERSION}`,
@@ -28,11 +49,10 @@ requestInstance.interceptors.request.use(
 requestInstance.interceptors.response.use(
   response => response,
   (error) => {
-    if (error.response.status === 401) {
-      localStorage.clear();
-      router.push({ name: routes.HOME });
-    }
-    Promise.reject(error);
+    errorAlerts(error);
+
+    const err = error.response || 'Network Response Error';
+    return Promise.reject(err);
   },
 );
 
