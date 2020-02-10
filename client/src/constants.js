@@ -8,4 +8,5 @@ export const routes = {
 
 export const localStorageKeys = {
   AUTH_TOKEN: 'AUTH_TOKEN',
+  USER_NAME: 'USER_NAME',
 };

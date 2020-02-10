@@ -16,6 +16,14 @@
             <VListTileTitle>Submit a Question</VListTileTitle>
           </VListTileContent>
         </VListTile>
+        <VListTile @click="submitBug">
+          <VListTileAction>
+            <VIcon>bug_report</VIcon>
+          </VListTileAction>
+          <VListTileContent>
+            <VListTileTitle>Submit a Bug</VListTileTitle>
+          </VListTileContent>
+        </VListTile>
         <VDivider />
         <VListTile @click="signout">
           <VListTileAction>
@@ -51,7 +59,7 @@
 </template>
 
 <script>
-import { routes } from './constants';
+import { localStorageKeys, routes } from './constants';
 
 export default {
   name: 'App',
@@ -68,6 +76,20 @@ export default {
     },
     submitQuestion() {
       this.$toast.info('Submit a question');
+    },
+    submitBug() {
+      this.drawer = false;
+      const errorTitle = ['Thank you'];
+      const userName = localStorage.getItem(localStorageKeys.USER_NAME);
+
+      if (userName) {
+        errorTitle.push(userName);
+      }
+      this.$swal({
+        icon: 'error',
+        title: errorTitle.join(', '),
+        text: 'Your discontent has been noted',
+      });
     },
   },
 };

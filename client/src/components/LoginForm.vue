@@ -34,9 +34,10 @@
                 id="login-form"
                 @submit.prevent="authenticateUser">
                 <VTextField
+                  id="username"
                   v-model="phone"
                   prepend-icon="phone"
-                  name="phone"
+                  name="username"
                   label="Phone"
                   type="phone" />
                 <VTextField
@@ -88,6 +89,7 @@ export default {
 
         const { data } = await UserRequests.authenticateUser(userAuthRequest);
         localStorage.setItem(localStorageKeys.AUTH_TOKEN, data.token.toString());
+        localStorage.setItem(localStorageKeys.USER_NAME, data.name);
         router.push({ name: routes.VOTE });
       } catch (e) {
         console.error(e);
