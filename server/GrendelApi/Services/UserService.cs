@@ -17,6 +17,7 @@ namespace GrendelApi.Services
         Task<User> CreateUserPasswordResetToken(long phone);
         Task<User> UpdateUserPassword(string passwordResetToken, string password);
         Task<User> GetUserFromResetToken(string passwordResetToken);
+        Task<User> GetUserFromAuthHeader(string authHeader);
     }
     public class UserService : IUserService
     {
@@ -91,6 +92,13 @@ namespace GrendelApi.Services
         public async Task<User> GetUserFromResetToken(string passwordResetToken)
         {
             var user = await _userRepository.GetUserFromPasswordResetToken(passwordResetToken);
+
+            return user;
+        }
+
+        public async Task<User> GetUserFromAuthHeader(string authHeader)
+        {
+            var user = await _userRepository.GetUserFromAuthHeader(authHeader);
 
             return user;
         }

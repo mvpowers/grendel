@@ -18,5 +18,17 @@ namespace GrendelData.Users
                 PasswordResetToken = user.PasswordResetToken
             };
         }
+
+        public static UserSessionView ToUserSessionView(this User user, bool hasVotingExpired, bool hasActiveVote)
+        {
+            if (user == null) throw new ArgumentNullException(nameof(user));
+            
+            return new UserSessionView()
+            {
+                Id = user.Id,
+                HasVotingExpired = hasVotingExpired,
+                HasActiveVote = hasActiveVote
+            };
+        }
     }
 }
