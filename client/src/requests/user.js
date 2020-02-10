@@ -1,10 +1,21 @@
 import axios from 'axios';
+import { errorAlerts } from './index';
 
 const API_CONTROLLER = 'user';
 
 const nonAuthRequestInstance = axios.create({
   baseURL: `${process.env.VUE_APP_API_URL}/api/${process.env.VUE_APP_API_VERSION}`,
 });
+
+nonAuthRequestInstance.interceptors.response.use(
+  response => response,
+  (error) => {
+    errorAlerts(error);
+
+    const err = error.response || 'Network Response Error';
+    return Promise.reject(err);
+  },
+);
 
 export class UserRequests {
   static authenticateUser(userAuthRequest) {

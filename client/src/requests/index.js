@@ -8,10 +8,12 @@ export { VoteOptionRequests } from './voteOption';
 export { VoteRequests } from './vote';
 export { UserRequests } from './user';
 
-const errorAlerts = (error) => {
+export const errorAlerts = (error) => {
+  const message = error.response.data.message || 'Unable to process request';
+
   switch (error.response.status) {
     case 400:
-      Swal.fire('Bad Request', error.response.data.message, 'error');
+      Swal.fire('Bad Request', message, 'error');
       break;
 
     case 401:
@@ -20,11 +22,11 @@ const errorAlerts = (error) => {
       break;
 
     case 422:
-      Swal.fire('Unprocessable Entity ', error.response.data.message, 'error');
+      Swal.fire('Unprocessable Entity ', message, 'error');
       break;
 
     default:
-      Swal.fire('Server Error ', error.response.data.message, 'error');
+      Swal.fire('Server Error ', message, 'error');
   }
 };
 
