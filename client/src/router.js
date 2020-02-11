@@ -39,6 +39,12 @@ const router = new Router({
       component: () => import('./views/Reset'),
       meta: { requiresAuth: false },
     },
+    {
+      path: '/submit-question',
+      name: routes.SUBMIT_QUESTION,
+      component: () => import('./views/SubmitQuestion'),
+      meta: { requiresAuth: true },
+    },
   ],
 });
 

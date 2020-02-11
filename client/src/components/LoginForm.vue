@@ -35,14 +35,14 @@
                 @submit.prevent="authenticateUser">
                 <VTextField
                   id="username"
-                  v-model="phone"
+                  v-model="formPhone"
                   prepend-icon="phone"
                   name="username"
                   label="Phone"
                   type="phone" />
                 <VTextField
                   id="password"
-                  v-model="password"
+                  v-model="formPassword"
                   prepend-icon="lock"
                   name="password"
                   label="Password"
@@ -73,18 +73,18 @@ import { localStorageKeys, routes } from '../constants';
 export default {
   data: () => ({
     drawer: null,
-    phone: '',
-    password: '',
+    formPhone: '',
+    formPassword: '',
     resetRoute: routes.RESET,
   }),
   methods: {
     async authenticateUser() {
-      if (!this.phone || !this.password) return;
+      if (!this.formPhone || !this.formPassword) return;
 
       try {
         const userAuthRequest = {
-          phone: parseInt(this.phone, 10),
-          password: this.password,
+          phone: parseInt(this.formPhone, 10),
+          password: this.formPassword,
         };
 
         const { data } = await UserRequests.authenticateUser(userAuthRequest);

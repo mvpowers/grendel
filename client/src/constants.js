@@ -4,6 +4,7 @@ export const routes = {
   WAIT: 'wait',
   RESULT: 'result',
   RESET: 'reset',
+  SUBMIT_QUESTION: 'submit_question',
 };
 
 export const localStorageKeys = {

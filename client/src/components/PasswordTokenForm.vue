@@ -11,7 +11,7 @@
         @cancel="goBack">
         <VTextField
           id="reset-form"
-          v-model="formPhone"
+          v-model.number="formPhone"
           prepend-icon="phone"
           name="phone"
           label="Phone"

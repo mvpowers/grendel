@@ -75,7 +75,8 @@ export default {
       this.$router.push({ name: routes.HOME });
     },
     submitQuestion() {
-      this.$toast.info('Submit a question');
+      this.drawer = false;
+      this.$router.push({ name: routes.SUBMIT_QUESTION });
     },
     submitBug() {
       this.drawer = false;
@@ -85,6 +86,7 @@ export default {
       if (userName) {
         errorTitle.push(userName);
       }
+
       this.$swal({
         icon: 'error',
         title: errorTitle.join(', '),

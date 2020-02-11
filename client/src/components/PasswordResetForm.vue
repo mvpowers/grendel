@@ -90,7 +90,7 @@ export default {
 
       try {
         await UserRequests.resetUserPassword(resetRequest);
-        this.$toast.success('Password updated successfully');
+        this.$toast.success('Password updated');
         this.$router.push({ name: routes.HOME });
       } catch (e) {
         console.error(e);
