@@ -16,6 +16,14 @@
             <VListTileTitle>Submit a Question</VListTileTitle>
           </VListTileContent>
         </VListTile>
+        <VListTile @click="submitFeatureRequest">
+          <VListTileAction>
+            <VIcon>add_to_queue</VIcon>
+          </VListTileAction>
+          <VListTileContent>
+            <VListTileTitle>Submit a Feature Request</VListTileTitle>
+          </VListTileContent>
+        </VListTile>
         <VListTile @click="submitBug">
           <VListTileAction>
             <VIcon>bug_report</VIcon>
@@ -31,6 +39,15 @@
           </VListTileAction>
           <VListTileContent>
             <VListTileTitle>Signout</VListTileTitle>
+          </VListTileContent>
+        </VListTile>
+<!--        TODO: move this out-->
+        <VListTile @click="startSession">
+          <VListTileAction>
+            <VIcon>exit_to_app</VIcon>
+          </VListTileAction>
+          <VListTileContent>
+            <VListTileTitle>START SESSION</VListTileTitle>
           </VListTileContent>
         </VListTile>
       </VList>
@@ -60,6 +77,7 @@
 
 <script>
 import { localStorageKeys, routes } from './constants';
+import { SessionRequests } from './requests';
 
 export default {
   name: 'App',
@@ -92,6 +110,33 @@ export default {
         title: errorTitle.join(', '),
         text: 'Your discontent has been noted',
       });
+    },
+    submitFeatureRequest() {
+      this.drawer = false;
+      const errorTitle = ['Thank you'];
+      const userName = localStorage.getItem(localStorageKeys.USER_NAME);
+
+      if (userName) {
+        errorTitle.push(userName);
+      }
+
+      this.$swal({
+        icon: 'info',
+        title: errorTitle.join(', '),
+        text: 'Your idea has been noted',
+      });
+    },
+    async startSession() {
+      try {
+        await SessionRequests.startSession();
+        this.$toast.success('Session started');
+        localStorage.clear();
+        this.drawer = false;
+        this.$router.push({ name: routes.HOME });
+      } catch (e) {
+        this.$toast.error('Session failed');
+        console.error(e);
+      }
     },
   },
 };

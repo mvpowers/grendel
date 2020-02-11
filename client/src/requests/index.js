@@ -7,6 +7,7 @@ export { QuestionRequests } from './question';
 export { VoteOptionRequests } from './voteOption';
 export { VoteRequests } from './vote';
 export { UserRequests } from './user';
+export { SessionRequests } from './session';
 
 export const errorAlerts = (error) => {
   const message = error.response.data.message || 'Unable to process request';
@@ -20,6 +21,10 @@ export const errorAlerts = (error) => {
       Swal.fire('Unauthorized', 'Please login to continue', 'error');
       localStorage.clear();
       router.push({ name: routes.HOME });
+      break;
+
+    case 403:
+      Swal.fire('Forbidden', 'User does not have access', 'error');
       break;
 
     case 422:

@@ -6,7 +6,7 @@ import VueSweetalert2 from 'vue-sweetalert2';
 import 'vuetify/src/stylus/app.styl';
 import App from './App.vue';
 import router from './router';
-import { UserRequests } from './requests';
+import { SessionRequests } from './requests';
 import { routes } from './constants';
 
 Vue.config.productionTip = false;
@@ -34,10 +34,10 @@ Vue.mixin({
   methods: {
     async routeVoteFlow() {
       try {
-        const { data } = await UserRequests.getUserSession();
+        const { data } = await SessionRequests.getUserSession();
         if (data.hasVotingExpired) return router.push({ name: routes.RESULT });
         if (data.hasActiveVote) return router.push({ name: routes.WAIT });
-        return null;
+        return router.push({ name: routes.VOTE });
       } catch (e) {
         console.error(e);
         await Swal.fire('Session Error', 'Please login to continue', 'error');

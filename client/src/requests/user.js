@@ -1,5 +1,5 @@
 import axios from 'axios';
-import requestInstance, { errorAlerts } from './index';
+import { errorAlerts } from './index';
 
 const API_CONTROLLER = 'user';
 
@@ -36,10 +36,5 @@ export class UserRequests {
   static resetUserPassword(resetRequest) {
     const url = `${API_CONTROLLER}/password-reset`;
     return nonAuthRequestInstance.post(url, resetRequest);
-  }
-
-  static getUserSession() {
-    const url = `${API_CONTROLLER}/session`;
-    return requestInstance.get(url);
   }
 }

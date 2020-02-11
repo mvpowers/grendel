@@ -2,7 +2,6 @@ using System;
 using System.Threading.Tasks;
 using GrendelApi.Exceptions;
 using GrendelApi.Services;
-using GrendelData.Questions;
 using GrendelData.Users;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -105,26 +104,5 @@ namespace GrendelApi.Controllers
                 return UnprocessableEntity(new ErrorResponse(e.Message));
             }
         }
-
-        [HttpGet("session")]
-        public async Task<ActionResult<UserSessionView>> GetUserSessionInfo()
-        {
-            try
-            {
-                var authHeader = Request.Headers["Authorization"];
-                var user = await _userService.GetUserFromAuthHeader(authHeader);
-                if (user == null) throw new UserNotFoundException();
-
-                var hasVotingExpired = await _voteService.HasVotingExpired();
-                var hasActiveVote = await _voteService.UserHasActiveVote(user.Id);
-
-                return user.ToUserSessionView(hasVotingExpired, hasActiveVote);
-            }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
-                return UnprocessableEntity(new ErrorResponse(e.Message));
-            }
-        } 
     }
 }

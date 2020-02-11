@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { QuestionRequests, UserRequests, VoteOptionRequests } from '../requests';
+import { QuestionRequests, SessionRequests, VoteOptionRequests } from '../requests';
 import VoteModal from '../components/VoteModal';
 
 export default {
@@ -66,7 +66,7 @@ export default {
     },
     async readUserSession() {
       try {
-        const { data } = await UserRequests.getUserSession();
+        const { data } = await SessionRequests.getUserSession();
         console.log(data);
       } catch (e) {
         console.error(e);
