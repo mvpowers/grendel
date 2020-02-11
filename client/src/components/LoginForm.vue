@@ -79,11 +79,16 @@ export default {
   }),
   methods: {
     async authenticateUser() {
-      if (!this.formPhone || !this.formPassword) return;
+      if (!this.formPhone || !this.formPassword) {
+        this.$toast.error('Phone and password cannot be empty');
+        return;
+      }
 
       try {
+        const phoneNumbersOnly = this.formPhone.match(/\d+/g).map(Number).join('');
+
         const userAuthRequest = {
-          phone: parseInt(this.formPhone, 10),
+          phone: parseInt(phoneNumbersOnly, 10),
           password: this.formPassword,
         };
 

@@ -11,7 +11,7 @@
         @cancel="goBack">
         <VTextField
           id="reset-form"
-          v-model.number="formPhone"
+          v-model="formPhone"
           prepend-icon="phone"
           name="phone"
           label="Phone"
@@ -50,8 +50,10 @@ export default {
   methods: {
     async createUserResetToken() {
       try {
+        const phoneNumbersOnly = this.formPhone.match(/\d+/g).map(Number).join('');
+
         const userTokenRequest = {
-          phone: parseInt(this.formPhone, 10),
+          phone: parseInt(phoneNumbersOnly, 10),
         };
         const { data } = await UserRequests.createUserResetToken(userTokenRequest);
         this.$swal({
