@@ -63,12 +63,22 @@ export default {
   }),
   methods: {
     async submitQuestion() {
+      if (this.formQuestion.length < 15) {
+        this.$toast.error('Invalid question');
+        return;
+      }
+
+      if (this.formQuestion === 'Who is most likely to ') {
+        this.$toast.error('Invalid question');
+        return;
+      }
+
       try {
         const createQuestionRequest = {
           inquiry: this.formQuestion,
         };
 
-        QuestionRequests.createQuestion(createQuestionRequest);
+        await QuestionRequests.createQuestion(createQuestionRequest);
         this.$toast.success('Question submitted');
         this.$router.back();
       } catch (e) {
