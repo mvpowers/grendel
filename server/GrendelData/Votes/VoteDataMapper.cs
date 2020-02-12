@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GrendelData.Votes
 {
@@ -21,18 +22,22 @@ namespace GrendelData.Votes
         public static VoteView ToVoteView(this Vote vote)
         {
             if (vote == null) throw new ArgumentNullException(nameof(vote));
-            
+
+            var likes = vote.Likes.Select(x => x.UserId).ToList();
+
             return new VoteView()
             {
                 Id = vote.Id,
                 Comment = vote.Comment,
-                VoteOptionId = vote.VoteOptionId
+                VoteOptionId = vote.VoteOptionId,
+                LikeCount = likes.Count
             };
         }
         
-        public static List<VoteView> ToVoteView(this List<Vote> votes)
+        public static List<VoteView> ToVoteView(this List<Vote> votes, int userId)
         {
             if (votes == null) throw new ArgumentNullException(nameof(votes));
+            if (userId <= 0) throw new ArgumentOutOfRangeException(nameof(userId));
             return votes.ConvertAll(x => x.ToVoteView());
         }
     }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using GrendelData.Likes;
 using GrendelData.Questions;
 using GrendelData.Votes;
 using Microsoft.EntityFrameworkCore;
@@ -18,11 +19,13 @@ namespace GrendelData.Users
         
         public List<Vote> Votes { get; set; }
         public List<Question> Questions { get; set; }
+        public List<Like> Likes { get; set; } 
 
         public User()
         {
             Votes = new List<Vote>();
             Questions = new List<Question>();
+            Likes = new List<Like>();
         }
     }
 

@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using GrendelData.Likes;
 using GrendelData.Questions;
 using GrendelData.Users;
 using GrendelData.VoteOptions;
@@ -18,6 +20,13 @@ namespace GrendelData.Votes
         
         public int VoteOptionId { get; set; }
         public VoteOption VoteOption { get; set; }
+        
+        public List<Like> Likes { get; set; }
+
+        public Vote()
+        {
+            Likes = new List<Like>();
+        }
     }
 
     public class VoteConfiguration : IEntityTypeConfiguration<Vote>

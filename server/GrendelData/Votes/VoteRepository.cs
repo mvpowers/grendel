@@ -41,6 +41,7 @@ namespace GrendelData.Votes
                     .Votes
                     .AsNoTracking()
                     .Where(x => x.QuestionId == activeQuestionId)
+                    .Include(x => x.Likes)
                     .ToListAsync();
 
                 return votes;
