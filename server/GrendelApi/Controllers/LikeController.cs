@@ -53,5 +53,28 @@ namespace GrendelApi.Controllers
                 return UnprocessableEntity(new ErrorResponse(e.Message));
             }
         }
+
+        [HttpDelete]
+        public async Task<ActionResult<VoteView>> DeleteLike(LikeDeleteRequest likeDeleteRequest)
+        {
+            try
+            {
+                var authHeader = Request.Headers["Authorization"];
+                var user = await _userService.GetUserFromAuthHeader(authHeader);
+                if (user == null) throw new UserNotFoundException();
+
+                await _likeService.DeleteLikeByVoteId(user.Id, likeDeleteRequest.VoteId);
+
+                var vote = await _voteService.ReadVoteById(likeDeleteRequest.VoteId);
+                if (vote == null) throw new ArgumentNullException(nameof(vote));
+
+                return Ok(vote.ToVoteView(user.Id));
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return UnprocessableEntity(new ErrorResponse(e.Message));
+            }
+        }
     }
 }

@@ -126,7 +126,7 @@ export default {
     },
     async likeCommentToggle(vote) {
       if (vote.currentUserLike) {
-        this.$toast.info(`remove ${vote.id}`);
+        await this.deleteLike(vote.id);
       } else {
         await this.createLike(vote.id);
       }
@@ -137,6 +137,17 @@ export default {
         const { data } = await LikeRequests.createLike(createLikeRequest);
 
         const oldVoteIdx = this.votes.findIndex(x => x.id === data.id);
+        this.votes.splice(oldVoteIdx, 1, data);
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    async deleteLike(voteId) {
+      try {
+        const deleteLikeRequest = { voteId };
+        const { data } = await LikeRequests.deleteLike(deleteLikeRequest);
+
+        const oldVoteIdx = this.votes.findIndex(x => x.id === voteId);
         this.votes.splice(oldVoteIdx, 1, data);
       } catch (e) {
         console.error(e);

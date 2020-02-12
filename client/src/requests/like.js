@@ -8,8 +8,8 @@ export class LikeRequests {
     return requestInstance.post(url, createLikeRequest);
   }
 
-  // static readActiveQuestion() {
-  //   const url = `${API_CONTROLLER}/active`;
-  //   return requestInstance.get(url);
-  // }
+  static deleteLike(deleteLikeRequest) {
+    const url = `${API_CONTROLLER}/`;
+    return requestInstance.delete(url, { data: deleteLikeRequest });
+  }
 }

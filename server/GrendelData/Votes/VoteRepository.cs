@@ -106,6 +106,7 @@ namespace GrendelData.Votes
             {
                 var vote = await _context.Votes
                     .Where(x => x.Id == voteId)
+                    .Include(x => x.Likes)
                     .FirstOrDefaultAsync();
 
                 return vote;
