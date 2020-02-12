@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using GrendelApi.Exceptions;
 using GrendelApi.Services;
-using GrendelData.Questions;
+using GrendelData.Likes;
+using GrendelData.Votes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -17,31 +17,35 @@ namespace GrendelApi.Controllers
     public class LikeController : ControllerBase
     {
         private readonly ILogger<LikeController> _logger;
-        private readonly IQuestionService _questionService;
+        private readonly IUserService _userService;
         private readonly IVoteService _voteService;
         private readonly ILikeService _likeService;
 
-        public LikeController(ILogger<LikeController> logger, IQuestionService questionService, IVoteService voteService, ILikeService likeService)
+        public LikeController(ILogger<LikeController> logger, IUserService userService, IVoteService voteService, ILikeService likeService)
         {
             _logger = logger;
-            _questionService = questionService;
+            _userService = userService;
             _voteService = voteService;
             _likeService = likeService;
         }
 
         
-        [HttpGet("active/self")]
-        public async Task<ActionResult<List<int>>> ReadActiveSelfLikes()
+        [HttpPost]
+        public async Task<ActionResult<VoteView>> CreateLike([FromBody] LikeCreateRequest likeCreateRequest)
         {
             try
             {
-                var question = await _questionService.ReadActiveQuestion();
-                if (question == null) throw new ReadEntityException(typeof(Question));
-            
-                var voteSessionDurationMinutes = _voteService.ReadVoteSessionDurationMinutes();
-                var questionView = question.ToQuestionView(voteSessionDurationMinutes);
-            
-                return Ok(questionView);
+                var authHeader = Request.Headers["Authorization"];
+                var user = await _userService.GetUserFromAuthHeader(authHeader);
+                if (user == null) throw new UserNotFoundException();
+
+                var like = await _likeService.CreateLike(user.Id, likeCreateRequest.VoteId);
+                if (like == null) throw new ArgumentNullException(nameof(like));
+
+                var vote = await _voteService.ReadVoteById(likeCreateRequest.VoteId);
+                if (vote == null) throw new ArgumentNullException(nameof(vote));
+
+                return Ok(vote.ToVoteView(user.Id));
             }
             catch (Exception e)
             {

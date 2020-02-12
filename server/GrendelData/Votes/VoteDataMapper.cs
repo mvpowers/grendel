@@ -19,7 +19,7 @@ namespace GrendelData.Votes
             };
         }
 
-        public static VoteView ToVoteView(this Vote vote)
+        public static VoteView ToVoteView(this Vote vote, int userId)
         {
             if (vote == null) throw new ArgumentNullException(nameof(vote));
 
@@ -30,7 +30,8 @@ namespace GrendelData.Votes
                 Id = vote.Id,
                 Comment = vote.Comment,
                 VoteOptionId = vote.VoteOptionId,
-                LikeCount = likes.Count
+                LikeCount = likes.Count,
+                CurrentUserLike = likes.Contains(userId)
             };
         }
         
@@ -38,7 +39,8 @@ namespace GrendelData.Votes
         {
             if (votes == null) throw new ArgumentNullException(nameof(votes));
             if (userId <= 0) throw new ArgumentOutOfRangeException(nameof(userId));
-            return votes.ConvertAll(x => x.ToVoteView());
+            
+            return votes.ConvertAll(x => x.ToVoteView(userId));
         }
     }
 }

@@ -1,18 +1,13 @@
 using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Linq;
 using System.Threading.Tasks;
-using GrendelData.Likes;
-using GrendelData.Users;
-using Microsoft.EntityFrameworkCore;
+using GrendelData.Questions;
 using Microsoft.Extensions.Logging;
 
-namespace GrendelData.Questions
+namespace GrendelData.Likes
 {
     public interface ILikeRepository
     {
-        // Task<List<Like>> ReadLikesByQuestionId(int questionId);
+        Task<Like> CreateLike(int userId, int voteId);
     }
     
     public class LikeRepository : ILikeRepository
@@ -26,19 +21,30 @@ namespace GrendelData.Questions
             _context = context;
         }
 
-        // public async Task<List<Like>> ReadLikesByQuestionId(int questionId)
-        // {
-        //     try
-        //     {
-        //         var likes = await _context.Likes
-        //             .Where(x => x.)
-        //     }
-        //     catch (Exception e)
-        //     {
-        //         _logger.LogError(e.Message);
-        //     }
-        //
-        //     return null;
-        // }
+        public async Task<Like> CreateLike(int userId, int voteId)
+        {
+            if (userId <= 0) throw new ArgumentOutOfRangeException(nameof(userId));
+            if (voteId <= 0) throw new ArgumentOutOfRangeException(nameof(voteId));
+            
+            try
+            {
+                var like = new Like()
+                {
+                    UserId = userId,
+                    VoteId = voteId
+                };
+                
+                await _context.AddAsync(like);
+                await _context.SaveChangesAsync();
+
+                return like;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+            }
+
+            return null;
+        }
     }
 }

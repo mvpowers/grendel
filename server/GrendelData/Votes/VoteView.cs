@@ -6,5 +6,6 @@ namespace GrendelData.Votes
         public string Comment { get; set; }
         public int VoteOptionId { get; set; }
         public int? LikeCount { get; set; }
+        public bool? CurrentUserLike { get; set; }
     }
 }

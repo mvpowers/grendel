@@ -1,9 +1,7 @@
 using System;
 using System.Threading.Tasks;
-using GrendelData;
 using GrendelData.Questions;
 using GrendelData.Users;
-using Microsoft.Extensions.Options;
 
 namespace GrendelApi.Services
 {
@@ -16,13 +14,11 @@ namespace GrendelApi.Services
     
     public class QuestionService : IQuestionService
     {
-        private readonly IAppSettings _appSettings;
         private readonly IQuestionRepository _questionRepository;
         private readonly IUserRepository _userRepository;
 
-        public QuestionService(IOptions<AppSettings> appSettings, IQuestionRepository questionRepository, IUserRepository userRepository)
+        public QuestionService(IQuestionRepository questionRepository, IUserRepository userRepository)
         {
-            _appSettings = appSettings.Value;
             _questionRepository = questionRepository;
             _userRepository = userRepository;
         }

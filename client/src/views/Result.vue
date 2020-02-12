@@ -7,15 +7,15 @@
       v-if="voteLabels.length && voteValues.length"
       :values="voteValues"
       :labels="voteLabels" />
-    <template v-for="comment in voteComments">
+    <template v-for="voteComment in voteComments">
       <VCard
-        :key="comment.id"
+        :key="voteComment.id"
         class="elevation-4 ma-3">
         <VCardTitle class="font-weight-light font-italic">
-          Vote for {{ comment.voteFor }}
+          Vote for {{ voteComment.voteOptionName }}
         </VCardTitle>
         <VCardText class="body-1 text-xs-center">
-          {{ comment.text }}
+          {{ voteComment.comment }}
         </VCardText>
         <VCardActions>
           <VListTile class="grow">
@@ -24,12 +24,12 @@
               justify-end>
               <div
                 class="like-button"
-                @click="likeCommentToggle(comment)">
-                <VIcon class="red--text mr-1">
+                @click="likeCommentToggle(voteComment)">
+                <VIcon :class="{ 'red--text': voteComment.currentUserLike }">
                   favorite
                 </VIcon>
-                <span class="grey--text">
-                  {{ comment.likeCount }}
+                <span class="grey--text ml-1">
+                  {{ voteComment.likeCount }}
                 </span>
               </div>
             </VLayout>
@@ -42,7 +42,12 @@
 
 <script>
 import ResultGraph from '../components/ResultGraph';
-import { QuestionRequests, VoteOptionRequests, VoteRequests } from '../requests';
+import {
+  QuestionRequests,
+  VoteOptionRequests,
+  VoteRequests,
+  LikeRequests,
+} from '../requests';
 
 export default {
   name: 'Result',
@@ -80,10 +85,8 @@ export default {
       return votesWithComments.map((x) => {
         const voteOption = this.voteOptions.find(y => y.id === x.voteOptionId);
         return {
-          id: x.id,
-          voteFor: voteOption.name,
-          text: x.comment,
-          likeCount: x.likeCount,
+          ...x,
+          voteOptionName: voteOption.name,
         };
       });
     },
@@ -121,8 +124,23 @@ export default {
         console.error(e);
       }
     },
-    likeCommentToggle(comment) {
-      this.$toast.info(`like toggled ${comment.id}`);
+    async likeCommentToggle(vote) {
+      if (vote.currentUserLike) {
+        this.$toast.info(`remove ${vote.id}`);
+      } else {
+        await this.createLike(vote.id);
+      }
+    },
+    async createLike(voteId) {
+      try {
+        const createLikeRequest = { voteId };
+        const { data } = await LikeRequests.createLike(createLikeRequest);
+
+        const oldVoteIdx = this.votes.findIndex(x => x.id === data.id);
+        this.votes.splice(oldVoteIdx, 1, data);
+      } catch (e) {
+        console.error(e);
+      }
     },
   },
 };

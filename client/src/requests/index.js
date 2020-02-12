@@ -8,6 +8,7 @@ export { VoteOptionRequests } from './voteOption';
 export { VoteRequests } from './vote';
 export { UserRequests } from './user';
 export { SessionRequests } from './session';
+export { LikeRequests } from './like';
 
 export const errorAlerts = (error) => {
   const message = error.response.data.message || 'Unable to process request';

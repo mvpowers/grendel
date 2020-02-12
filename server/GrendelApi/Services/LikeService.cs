@@ -1,24 +1,26 @@
-using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using GrendelData;
-using GrendelData.Questions;
-using GrendelData.Users;
-using Microsoft.Extensions.Options;
+using GrendelData.Likes;
 
 namespace GrendelApi.Services
 {
     public interface ILikeService
     {
+        Task<Like> CreateLike(int userId, int voteId);
     }
     
     public class LikeService : ILikeService
     {
-        private readonly IUserRepository _userRepository;
+        private readonly ILikeRepository _likeRepository;
 
-        public LikeService(IUserRepository userRepository)
+        public LikeService(ILikeRepository likeRepository)
         {
-            _userRepository = userRepository;
+            _likeRepository = likeRepository;
+        }
+
+        public async Task<Like> CreateLike(int userId, int voteId)
+        {
+            var like = await _likeRepository.CreateLike(userId, voteId);
+            return like;
         }
     }
 }

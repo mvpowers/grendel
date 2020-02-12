@@ -3,6 +3,7 @@ using System.Text;
 using GrendelApi.Services;
 using GrendelCommon;
 using GrendelData;
+using GrendelData.Likes;
 using GrendelData.Questions;
 using GrendelData.Users;
 using GrendelData.VoteOptions;
@@ -85,6 +86,9 @@ namespace GrendelApi
             
             services.AddScoped<IVoteOptionService, VoteOptionService>();
             services.AddScoped<IVoteOptionRepository, VoteOptionRepository>();
+            
+            services.AddScoped<ILikeService, LikeService>();
+            services.AddScoped<ILikeRepository, LikeRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

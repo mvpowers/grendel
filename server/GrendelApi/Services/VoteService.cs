@@ -16,6 +16,7 @@ namespace GrendelApi.Services
         int ReadVoteSessionDurationMinutes();
         Task<bool> UserHasActiveVote(int userId);
         Task<bool> HasVotingExpired();
+        Task<Vote> ReadVoteById(int voteId);
     }
     
     public class VoteService : IVoteService
@@ -69,6 +70,12 @@ namespace GrendelApi.Services
             var questionTimeExpires = activeQuestion.TimeAsked?.AddMinutes(voteSessionDurationMinutes);
 
             return DateTime.Now > questionTimeExpires;
+        }
+
+        public async Task<Vote> ReadVoteById(int voteId)
+        {
+            var vote = await _voteRepository.GetVoteByVoteId(voteId);
+            return vote;
         }
     }
 }

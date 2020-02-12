@@ -13,6 +13,7 @@ namespace GrendelData.Votes
         Task<Vote> CreateVote(User user, VoteCreateRequest voteCreateRequest);
         Task<List<Vote>> ReadActiveVotes();
         Task<Vote> GetVoteByUserId(int userId, int voteId);
+        Task<Vote> GetVoteByVoteId(int voteId);
     }
     
     public class VoteRepository : IVoteRepository
@@ -85,6 +86,26 @@ namespace GrendelData.Votes
                 var vote = await _context.Votes
                     .Where(x => x.UserId == userId)
                     .Where(x => x.QuestionId == questionId)
+                    .FirstOrDefaultAsync();
+
+                return vote;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+            }
+
+            return null;
+        }
+        
+        public async Task<Vote> GetVoteByVoteId(int voteId)
+        {
+            if (voteId <= 0) throw new ArgumentOutOfRangeException(nameof(voteId));
+
+            try
+            {
+                var vote = await _context.Votes
+                    .Where(x => x.Id == voteId)
                     .FirstOrDefaultAsync();
 
                 return vote;

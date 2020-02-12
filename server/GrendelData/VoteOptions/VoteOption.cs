@@ -9,7 +9,7 @@ namespace GrendelData.VoteOptions
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public bool IsActive { get; set; }
+        public bool? IsActive { get; set; }
         
         public List<Vote> Votes { get; set; }
 
