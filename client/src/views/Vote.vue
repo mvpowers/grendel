@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { QuestionRequests, SessionRequests, VoteOptionRequests } from '../requests';
+import { QuestionRequests, VoteOptionRequests } from '../requests';
 import VoteModal from '../components/VoteModal';
 
 export default {
@@ -55,7 +55,6 @@ export default {
     await this.routeVoteFlow();
   },
   async mounted() {
-    await this.readUserSession();
     await this.readActiveQuestion();
     await this.readActiveVoteOptions();
   },
@@ -63,14 +62,6 @@ export default {
     handleClick(option) {
       this.selectedOption = option;
       this.modalStatus = true;
-    },
-    async readUserSession() {
-      try {
-        const { data } = await SessionRequests.getUserSession();
-        console.log(data);
-      } catch (e) {
-        console.error(e);
-      }
     },
     async readActiveQuestion() {
       try {

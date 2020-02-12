@@ -45,6 +45,12 @@ const router = new Router({
       component: () => import('./views/SubmitQuestion'),
       meta: { requiresAuth: true },
     },
+    {
+      path: '/admin',
+      name: routes.ADMIN_CENTER,
+      component: () => import('./views/Admin'),
+      meta: { requiresAuth: true },
+    },
   ],
 });
 

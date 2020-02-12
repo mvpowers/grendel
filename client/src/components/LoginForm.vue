@@ -95,6 +95,7 @@ export default {
         const { data } = await UserRequests.authenticateUser(userAuthRequest);
         localStorage.setItem(localStorageKeys.AUTH_TOKEN, data.token.toString());
         localStorage.setItem(localStorageKeys.USER_NAME, data.name);
+        localStorage.setItem(localStorageKeys.USER_ADMIN, data.isAdmin);
         router.push({ name: routes.VOTE });
       } catch (e) {
         console.error(e);

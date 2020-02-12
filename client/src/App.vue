@@ -8,6 +8,7 @@
       disable-route-watcher
       app>
       <VList>
+        <!-- SUBMIT QUESTION -->
         <VListTile @click="submitQuestion">
           <VListTileAction>
             <VIcon>add_circle</VIcon>
@@ -16,6 +17,7 @@
             <VListTileTitle>Submit a Question</VListTileTitle>
           </VListTileContent>
         </VListTile>
+        <!-- SUBMIT FEATURE REQUEST -->
         <VListTile @click="submitFeatureRequest">
           <VListTileAction>
             <VIcon>add_to_queue</VIcon>
@@ -24,6 +26,7 @@
             <VListTileTitle>Submit a Feature Request</VListTileTitle>
           </VListTileContent>
         </VListTile>
+        <!-- SUBMIT BUG -->
         <VListTile @click="submitBug">
           <VListTileAction>
             <VIcon>bug_report</VIcon>
@@ -33,21 +36,24 @@
           </VListTileContent>
         </VListTile>
         <VDivider />
+        <!-- ADMIN CENTER -->
+        <VListTile
+          v-if="showAdminCenter"
+          @click="adminCenter">
+          <VListTileAction>
+            <VIcon>vpn_lock</VIcon>
+          </VListTileAction>
+          <VListTileContent>
+            <VListTileTitle>Admin Center</VListTileTitle>
+          </VListTileContent>
+        </VListTile>
+        <!-- SIGNOUT -->
         <VListTile @click="signout">
           <VListTileAction>
             <VIcon>exit_to_app</VIcon>
           </VListTileAction>
           <VListTileContent>
             <VListTileTitle>Signout</VListTileTitle>
-          </VListTileContent>
-        </VListTile>
-<!--        TODO: move this out-->
-        <VListTile @click="startSession">
-          <VListTileAction>
-            <VIcon>exit_to_app</VIcon>
-          </VListTileAction>
-          <VListTileContent>
-            <VListTileTitle>START SESSION</VListTileTitle>
           </VListTileContent>
         </VListTile>
       </VList>
@@ -77,14 +83,17 @@
 
 <script>
 import { localStorageKeys, routes } from './constants';
-import { SessionRequests } from './requests';
 
 export default {
   name: 'App',
   data: () => ({
     ignoredToolbarRoutes: [routes.HOME, routes.RESET],
     drawer: false,
+    showAdminCenter: false,
   }),
+  beforeMount() {
+    this.showAdminCenter = localStorage.getItem(localStorageKeys.USER_ADMIN);
+  },
   methods: {
     signout() {
       localStorage.clear();
@@ -126,17 +135,9 @@ export default {
         text: 'Your idea has been noted',
       });
     },
-    async startSession() {
-      try {
-        await SessionRequests.startSession();
-        this.$toast.success('Session started');
-        localStorage.clear();
-        this.drawer = false;
-        this.$router.push({ name: routes.HOME });
-      } catch (e) {
-        this.$toast.error('Session failed');
-        console.error(e);
-      }
+    async adminCenter() {
+      this.drawer = false;
+      this.$router.push({ name: routes.ADMIN_CENTER });
     },
   },
 };
