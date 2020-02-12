@@ -12,7 +12,7 @@ namespace GrendelApi.Services
     public interface IVoteService
     {
         Task<Vote> CreateVote(string authHeader, VoteCreateRequest voteCreateRequest);
-        Task<List<Vote>> ReadActiveVotes();
+        Task<List<VoteView>> ReadActiveVotes(int userId);
         int ReadVoteSessionDurationMinutes();
         Task<bool> UserHasActiveVote(int userId);
         Task<bool> HasVotingExpired();
@@ -33,9 +33,11 @@ namespace GrendelApi.Services
             _appSettings = appSettings;
         }
 
-        public async Task<List<Vote>> ReadActiveVotes()
+        public async Task<List<VoteView>> ReadActiveVotes(int userId)
         {
-            return await _voteRepository.ReadActiveVotes();
+            var votes = await _voteRepository.ReadActiveVotes();
+            
+            return votes.ToVoteView(userId);
         }
 
         public async Task<Vote> CreateVote(string authHeader, VoteCreateRequest voteCreateRequest)

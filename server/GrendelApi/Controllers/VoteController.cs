@@ -18,11 +18,13 @@ namespace GrendelApi.Controllers
     {
         private readonly ILogger<VoteController> _logger;
         private readonly IVoteService _voteService;
+        private readonly IUserService _userService;
 
-        public VoteController(ILogger<VoteController> logger, IVoteService voteService)
+        public VoteController(ILogger<VoteController> logger, IVoteService voteService, IUserService userService)
         {
             _logger = logger;
             _voteService = voteService;
+            _userService = userService;
         }
 
         [HttpGet("active")]
@@ -30,10 +32,13 @@ namespace GrendelApi.Controllers
         {
             try
             {
-                var votes = await _voteService.ReadActiveVotes();
-                if (votes == null) throw new ReadEntityException(typeof(Vote));
+                var authHeader = Request.Headers["Authorization"];
+                var user = await _userService.GetUserFromAuthHeader(authHeader);
+                
+                var voteViews = await _voteService.ReadActiveVotes(user.Id);
+                if (voteViews == null) throw new ReadEntityException(typeof(Vote));
             
-                return Ok(votes.ToVoteView());
+                return Ok(voteViews);
             }
             catch (Exception e)
             {
@@ -52,7 +57,7 @@ namespace GrendelApi.Controllers
                 var vote = await _voteService.CreateVote(authHeader, request);
                 if (vote == null) throw new CreateEntityException(typeof(Vote));
                 
-                return Ok(vote.ToVoteView());
+                return NoContent();
             }
             catch (Exception e)
             {

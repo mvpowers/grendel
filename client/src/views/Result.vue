@@ -16,14 +16,25 @@
         </VCardTitle>
         <VCardText class="body-1 text-xs-center">
           {{ comment.text }}
-          <div class="text-xs-center mt-3">
-            <VRating
-              color="yellow darken-3"
-              background-color="grey darken-1"
-              empty-icon="$vuetify.icons.ratingFull"
-              hover />
-          </div>
         </VCardText>
+        <VCardActions>
+          <VListTile class="grow">
+            <VLayout
+              align-center
+              justify-end>
+              <div
+                class="like-button"
+                @click="likeCommentToggle(comment)">
+                <VIcon class="red--text mr-1">
+                  favorite
+                </VIcon>
+                <span class="grey--text">
+                  {{ comment.likeCount }}
+                </span>
+              </div>
+            </VLayout>
+          </VListTile>
+        </VCardActions>
       </VCard>
     </template>
   </div>
@@ -72,6 +83,7 @@ export default {
           id: x.id,
           voteFor: voteOption.name,
           text: x.comment,
+          likeCount: x.likeCount,
         };
       });
     },
@@ -109,6 +121,15 @@ export default {
         console.error(e);
       }
     },
+    likeCommentToggle(comment) {
+      this.$toast.info(`like toggled ${comment.id}`);
+    },
   },
 };
 </script>
+
+<style>
+  .like-button {
+    cursor: pointer;
+  }
+</style>
