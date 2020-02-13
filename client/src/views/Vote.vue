@@ -1,6 +1,9 @@
 <template>
   <VContainer fluid>
-    <VLayout justify-center>
+    <LoadSpinner v-if="isPageLoading" />
+    <VLayout
+      v-else
+      justify-center>
       <VFlex
         xs12
         sm8>
@@ -36,10 +39,12 @@
 <script>
 import { QuestionRequests, VoteOptionRequests } from '../requests';
 import VoteModal from '../components/VoteModal';
+import LoadSpinner from '../components/LoadSpinner';
 
 export default {
-  components: { VoteModal },
+  components: { VoteModal, LoadSpinner },
   data: () => ({
+    isPageLoading: false,
     modalStatus: false,
     question: {
       id: 0,
@@ -55,8 +60,14 @@ export default {
     await this.routeVoteFlow();
   },
   async mounted() {
+    this.isPageLoading = true;
+
     await this.readActiveQuestion();
     await this.readActiveVoteOptions();
+
+    this.$nextTick(() => {
+      this.isPageLoading = false;
+    });
   },
   methods: {
     handleClick(option) {

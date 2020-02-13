@@ -1,6 +1,9 @@
 <template>
   <VContainer class="justify-center align-center">
-    <div class="title text-xs-center my-3">
+    <LoadSpinner v-if="isPageLoading" />
+    <div
+      v-else
+      class="title text-xs-center my-3">
       {{ question.inquiry }}
     </div>
     <div class="headline text-xs-center">
@@ -11,10 +14,13 @@
 
 <script>
 import { QuestionRequests } from '../requests';
+import LoadSpinner from '../components/LoadSpinner';
 
 export default {
   name: 'Wait',
+  components: { LoadSpinner },
   data: () => ({
+    isPageLoading: false,
     expiration: null,
     countdown: null,
     question: {
@@ -41,12 +47,17 @@ export default {
     await this.routeVoteFlow();
   },
   async mounted() {
+    this.isPageLoading = true;
     await this.readActiveQuestion();
 
     setInterval(() => {
       const now = Date.now();
       this.countdown = this.question.timeVotingExpires - now;
     }, 100);
+
+    this.$nextTick(() => {
+      this.isPageLoading = false;
+    });
   },
   methods: {
     formatTwoDigitNumber(val) {

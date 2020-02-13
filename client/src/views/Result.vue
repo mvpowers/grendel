@@ -1,54 +1,53 @@
 <template>
   <div>
-    <div class="title text-xs-center ma-3">
-      {{ question.inquiry }}
-    </div>
-    <VAlert
-      :value="votes.length === 0"
-      class="mx-3"
-      color="warning"
-      icon="priority_high">
-      Either no one voted or something is jacked.
-    </VAlert>
-    <ResultGraph
-      v-if="voteLabels.length && voteValues.length"
-      :values="voteValues"
-      :labels="voteLabels" />
-    <template v-for="voteComment in voteComments">
-      <VCard
-        :key="voteComment.id"
-        class="elevation-4 ma-3">
-        <VCardTitle class="font-weight-light font-italic">
-          Vote for {{ voteComment.voteOptionName }}
-        </VCardTitle>
-        <VCardText class="body-1 text-xs-center">
-          {{ voteComment.comment }}
-        </VCardText>
-        <VCardActions>
-          <VListTile class="grow">
-            <VLayout
-              align-center
-              justify-end>
-              <div
-                class="like-button"
-                @click="likeCommentToggle(voteComment)">
-                <VIcon :class="{ 'red--text': voteComment.currentUserLike }">
-                  favorite
-                </VIcon>
-                <span class="grey--text ml-1">
-                  {{ voteComment.likeCount }}
-                </span>
-              </div>
-            </VLayout>
-          </VListTile>
-        </VCardActions>
-      </VCard>
+    <LoadSpinner v-if="isPageLoading" />
+    <template v-else>
+      <div class="title text-xs-center ma-3">
+        {{ question.inquiry }}
+      </div>
+      <WarningAlert v-if="votes.length === 0" />
+      <ResultGraph
+        v-if="voteLabels.length && voteValues.length"
+        :values="voteValues"
+        :labels="voteLabels" />
+      <template v-for="voteComment in voteComments">
+        <VCard
+          :key="voteComment.id"
+          class="elevation-4 ma-3">
+          <VCardTitle class="font-weight-light font-italic">
+            Vote for {{ voteComment.voteOptionName }}
+          </VCardTitle>
+          <VCardText class="body-1 text-xs-center">
+            {{ voteComment.comment }}
+          </VCardText>
+          <VCardActions>
+            <VListTile class="grow">
+              <VLayout
+                align-center
+                justify-end>
+                <div
+                  class="like-button"
+                  @click="likeCommentToggle(voteComment)">
+                  <VIcon :class="{ 'red--text': voteComment.currentUserLike }">
+                    favorite
+                  </VIcon>
+                  <span class="grey--text ml-1">
+                    {{ voteComment.likeCount }}
+                  </span>
+                </div>
+              </VLayout>
+            </VListTile>
+          </VCardActions>
+        </VCard>
+      </template>
     </template>
   </div>
 </template>
 
 <script>
 import ResultGraph from '../components/ResultGraph';
+import LoadSpinner from '../components/LoadSpinner';
+import WarningAlert from '../components/WarningAlert';
 import {
   QuestionRequests,
   VoteOptionRequests,
@@ -58,8 +57,9 @@ import {
 
 export default {
   name: 'Result',
-  components: { ResultGraph },
+  components: { ResultGraph, LoadSpinner, WarningAlert },
   data: () => ({
+    isPageLoading: false,
     question: {
       inquiry: '',
     },
@@ -102,9 +102,15 @@ export default {
     await this.routeVoteFlow();
   },
   async mounted() {
+    this.isPageLoading = true;
+
     await this.readActiveVoteOptions();
     await this.readActiveQuestion();
     await this.readActiveVotes();
+
+    this.$nextTick(() => {
+      this.isPageLoading = false;
+    });
   },
   methods: {
     async readActiveQuestion() {
