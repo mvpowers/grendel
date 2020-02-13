@@ -4,8 +4,10 @@ import VuetifyToast from 'vuetify-toast-snackbar';
 import Swal from 'sweetalert2';
 import VueSweetalert2 from 'vue-sweetalert2';
 import 'vuetify/src/stylus/app.styl';
+
 import App from './App.vue';
 import router from './router';
+import store from './store';
 import { SessionRequests } from './requests';
 import { routes } from './constants';
 
@@ -49,5 +51,6 @@ Vue.mixin({
 
 new Vue({
   router,
+  store,
   render: h => h(App),
 }).$mount('#app');

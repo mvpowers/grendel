@@ -82,17 +82,18 @@
 </template>
 
 <script>
-import { localStorageKeys, routes } from './constants';
+import { routes } from './constants';
 
 export default {
   name: 'App',
   data: () => ({
     ignoredToolbarRoutes: [routes.HOME, routes.RESET],
     drawer: false,
-    showAdminCenter: false,
   }),
-  beforeMount() {
-    this.showAdminCenter = localStorage.getItem(localStorageKeys.USER_ADMIN);
+  computed: {
+    showAdminCenter() {
+      return this.$store.state.userIsAdmin;
+    },
   },
   methods: {
     signout() {
@@ -108,7 +109,7 @@ export default {
     submitBug() {
       this.drawer = false;
       const errorTitle = ['Thank you'];
-      const userName = localStorage.getItem(localStorageKeys.USER_NAME);
+      const { userName } = this.$store.state;
 
       if (userName) {
         errorTitle.push(userName);
@@ -123,7 +124,7 @@ export default {
     submitFeatureRequest() {
       this.drawer = false;
       const errorTitle = ['Thank you'];
-      const userName = localStorage.getItem(localStorageKeys.USER_NAME);
+      const { userName } = this.$store.state;
 
       if (userName) {
         errorTitle.push(userName);

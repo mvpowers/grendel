@@ -10,6 +10,8 @@ export const routes = {
 
 export const localStorageKeys = {
   AUTH_TOKEN: 'AUTH_TOKEN',
-  USER_NAME: 'USER_NAME',
-  USER_ADMIN: 'USER_ADMIN',
+};
+
+export const mutations = {
+  SET_USER_INFO: 'SET_USER_INFO',
 };

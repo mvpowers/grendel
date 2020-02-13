@@ -3,13 +3,13 @@
     <div class="title text-xs-center ma-3">
       {{ question.inquiry }}
     </div>
-    <v-alert
+    <VAlert
       :value="votes.length === 0"
       class="mx-3"
       color="warning"
       icon="priority_high">
       Either no one voted or something is jacked.
-    </v-alert>
+    </VAlert>
     <ResultGraph
       v-if="voteLabels.length && voteValues.length"
       :values="voteValues"

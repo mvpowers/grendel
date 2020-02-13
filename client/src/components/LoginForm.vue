@@ -66,9 +66,9 @@
 </template>
 
 <script>
-import router from '@/router';
+import router from '../router';
 import { UserRequests } from '../requests';
-import { localStorageKeys, routes } from '../constants';
+import { localStorageKeys, mutations, routes } from '../constants';
 
 export default {
   data: () => ({
@@ -94,8 +94,7 @@ export default {
 
         const { data } = await UserRequests.authenticateUser(userAuthRequest);
         localStorage.setItem(localStorageKeys.AUTH_TOKEN, data.token.toString());
-        localStorage.setItem(localStorageKeys.USER_NAME, data.name);
-        localStorage.setItem(localStorageKeys.USER_ADMIN, data.isAdmin);
+        this.$store.commit(mutations.SET_USER_INFO, data);
         router.push({ name: routes.VOTE });
       } catch (e) {
         console.error(e);
