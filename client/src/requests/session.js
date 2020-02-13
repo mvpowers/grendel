@@ -13,8 +13,8 @@ export class SessionRequests {
     return requestInstance.get(url);
   }
 
-  static endSession() {
-    const url = `${API_CONTROLLER}/start`;
+  static expireSession() {
+    const url = `${API_CONTROLLER}/expire`;
     return requestInstance.get(url);
   }
 }

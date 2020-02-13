@@ -72,7 +72,7 @@ namespace GrendelApi.Controllers
             }
         }
         
-        [HttpGet("end")]
+        [HttpGet("expire")]
         public async Task<ActionResult> EndSession()
         {
             try
@@ -80,6 +80,8 @@ namespace GrendelApi.Controllers
                 var authHeader = Request.Headers["Authorization"];
                 var user = await _userService.GetUserFromAuthHeader(authHeader);
                 if (user.IsAdmin != true) return Forbid();
+
+                await _questionService.ExpireActiveQuestion();
 
                 // todo add text notification
 
