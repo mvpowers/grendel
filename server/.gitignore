@@ -7,6 +7,7 @@ project.lock.json
 nupkg/
 
 # appsettings
+appsettings.json
 appsettings.*.json
 !appsettings.example.json
 
