@@ -22,7 +22,7 @@
             <VTextField
               id="user-name"
               v-model="formName"
-              prepend-icon="lock"
+              prepend-icon="person"
               name="user-name"
               label="Name"
               type="text" />
