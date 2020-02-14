@@ -89,6 +89,8 @@ namespace GrendelApi
             
             services.AddScoped<ILikeService, LikeService>();
             services.AddScoped<ILikeRepository, LikeRepository>();
+            
+            services.AddScoped<ITextService, TextService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

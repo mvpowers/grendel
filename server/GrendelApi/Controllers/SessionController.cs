@@ -19,13 +19,15 @@ namespace GrendelApi.Controllers
         private readonly IUserService _userService;
         private readonly IQuestionService _questionService;
         private readonly IVoteService _voteService;
+        private readonly ITextService _textService;
 
-        public SessionController(ILogger<SessionController> logger, IUserService userService, IQuestionService questionService, IVoteService voteService)
+        public SessionController(ILogger<SessionController> logger, IUserService userService, IQuestionService questionService, IVoteService voteService, ITextService textService)
         {
             _logger = logger;
             _userService = userService;
             _questionService = questionService;
             _voteService = voteService;
+            _textService = textService;
         }
 
         
@@ -61,7 +63,8 @@ namespace GrendelApi.Controllers
 
                 await _questionService.SetNewActiveQuestion();
                 
-                // todo add text notification
+                var userPhones = await _userService.GetActiveUserPhones();
+                await _textService.SendSessionStartTexts(userPhones);
 
                 return NoContent();
             }
@@ -82,8 +85,9 @@ namespace GrendelApi.Controllers
                 if (user.IsAdmin != true) return Forbid();
 
                 await _questionService.ExpireActiveQuestion();
-
+                
                 // todo add text notification
+                await _textService.SendSessionStartText(9099960596);
 
                 return NoContent();
             }

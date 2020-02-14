@@ -16,6 +16,7 @@ namespace GrendelData.Users
         public string PasswordResetToken { get; set; }
         public bool IsAdmin { get; set; }
         public long Phone { get; set; }
+        public bool IsActive { get; set; }
         
         public List<Vote> Votes { get; set; }
         public List<Question> Questions { get; set; }
@@ -36,6 +37,10 @@ namespace GrendelData.Users
             builder
                 .Property(x => x.IsAdmin)
                 .HasDefaultValue(false);
+
+            builder
+                .Property(x => x.IsActive)
+                .HasDefaultValue(true);
         }
     }
 }

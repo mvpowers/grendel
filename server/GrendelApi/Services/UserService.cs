@@ -1,5 +1,7 @@
 using System;
+using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,6 +20,7 @@ namespace GrendelApi.Services
         Task<User> UpdateUserPassword(string passwordResetToken, string password);
         Task<User> GetUserFromResetToken(string passwordResetToken);
         Task<User> GetUserFromAuthHeader(string authHeader);
+        Task<List<long>> GetActiveUserPhones();
     }
     public class UserService : IUserService
     {
@@ -101,6 +104,14 @@ namespace GrendelApi.Services
             var user = await _userRepository.GetUserFromAuthHeader(authHeader);
 
             return user;
+        }
+
+        public async Task<List<long>> GetActiveUserPhones()
+        {
+            var users = await _userRepository.GetActiveUsers();
+            var phones = users.Select(x => x.Phone).ToList();
+
+            return phones;
         }
     }
 }

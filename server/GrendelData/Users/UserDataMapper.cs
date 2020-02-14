@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace GrendelData.Users
 {
@@ -17,6 +18,13 @@ namespace GrendelData.Users
                 IsAdmin = user.IsAdmin,
                 PasswordResetToken = user.PasswordResetToken
             };
+        }
+
+        public static List<UserView> ToUserView(this List<User> users)
+        {
+            if (users == null) throw new ArgumentNullException(nameof(users));
+
+            return users.ConvertAll(x => x.ToUserView());
         }
 
         public static UserSessionView ToUserSessionView(this User user, bool hasVotingExpired, bool hasActiveVote)
