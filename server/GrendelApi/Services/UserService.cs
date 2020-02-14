@@ -15,6 +15,7 @@ namespace GrendelApi.Services
 {
     public interface IUserService
     {
+        Task<User> CreateUser(UserCreateRequest userCreateRequest);
         Task<User> Authenticate(long phone, string password);
         Task<User> CreateUserPasswordResetToken(long phone);
         Task<User> UpdateUserPassword(string passwordResetToken, string password);
@@ -112,6 +113,15 @@ namespace GrendelApi.Services
             var phones = users.Select(x => x.Phone).ToList();
 
             return phones;
+        }
+
+        public async Task<User> CreateUser(UserCreateRequest userCreateRequest)
+        {
+            var newPasswordResetToken = Guid.NewGuid().ToString();
+            var newUser = userCreateRequest.ToUser(newPasswordResetToken);
+
+            await _userRepository.CreateUser(newUser);
+            return newUser;
         }
     }
 }

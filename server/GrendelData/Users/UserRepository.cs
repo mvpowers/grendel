@@ -10,6 +10,7 @@ namespace GrendelData.Users
 {
     public interface IUserRepository
     {
+        Task<User> CreateUser(User user);
         Task<User> UpdateUser(User user);
         Task<User> GetUserFromAuthHeader(string authHeader);
         Task<User> GetUserFromPhone(long phone);
@@ -118,6 +119,25 @@ namespace GrendelData.Users
                 if (users == null) throw new NoNullAllowedException(nameof(users));
 
                 return users.ToUserView();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+            }
+
+            return null;
+        }
+
+        public async Task<User> CreateUser(User user)
+        {
+            if (user == null) throw new ArgumentNullException(nameof(user));
+            
+            try
+            {
+                await _context.Users.AddAsync(user);
+                await _context.SaveChangesAsync();
+
+                return user;
             }
             catch (Exception e)
             {

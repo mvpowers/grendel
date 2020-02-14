@@ -17,13 +17,13 @@ namespace GrendelApi.Controllers
     {
         private readonly ILogger<UserController> _logger;
         private readonly IUserService _userService;
-        private readonly IVoteService _voteService;
+        private readonly ITextService _textService;
 
-        public UserController(ILogger<UserController> logger, IUserService userService, IVoteService voteService)
+        public UserController(ILogger<UserController> logger, IUserService userService, ITextService textService)
         {
             _logger = logger;
             _userService = userService;
-            _voteService = voteService;
+            _textService = textService;
         }
         
         [AllowAnonymous]
@@ -52,6 +52,8 @@ namespace GrendelApi.Controllers
             {
                 var user = await _userService.CreateUserPasswordResetToken(userTokenRequest.Phone);
                 if (user == null) throw new UserNotFoundException();
+
+                await _textService.SendPasswordResetText(user.Phone, user.PasswordResetToken);
 
                 return Ok(user.ToUserView());
             }
@@ -97,6 +99,30 @@ namespace GrendelApi.Controllers
                 if (user == null) throw new UserNotFoundException();
 
                 return Ok(user.ToUserView());
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return UnprocessableEntity(new ErrorResponse(e.Message));
+            }
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<UserView>> CreateUser(UserCreateRequest userCreateRequest)
+        {
+            if (userCreateRequest == null) throw new ArgumentNullException(nameof(userCreateRequest));
+
+            try
+            {
+                var authHeader = Request.Headers["Authorization"];
+                var user = await _userService.GetUserFromAuthHeader(authHeader);
+                if (user.IsAdmin != true) return Forbid();
+                
+                var newUser = await _userService.CreateUser(userCreateRequest);
+                if (newUser == null) throw new ArgumentNullException(nameof(newUser));
+
+                await _textService.SendPasswordResetText(newUser.Phone, newUser.PasswordResetToken);
+                return Ok(newUser.ToUserView());
             }
             catch (Exception e)
             {

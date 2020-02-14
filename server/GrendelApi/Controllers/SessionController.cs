@@ -86,8 +86,8 @@ namespace GrendelApi.Controllers
 
                 await _questionService.ExpireActiveQuestion();
                 
-                // todo add text notification
-                await _textService.SendSessionStartText(9099960596);
+                var userPhones = await _userService.GetActiveUserPhones();
+                await _textService.SendSessionExpireTexts(userPhones);
 
                 return NoContent();
             }

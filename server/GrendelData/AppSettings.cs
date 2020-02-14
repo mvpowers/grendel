@@ -2,6 +2,7 @@ namespace GrendelData
 {
     public interface IAppSettings
     {
+        string AppUrl { get; }
         string Secret { get; }
         int VoteSessionDurationMinutes { get; }
         string TwilioSid { get; }
@@ -10,6 +11,7 @@ namespace GrendelData
     }
     public class AppSettings : IAppSettings
     {
+        public string AppUrl { get; set;  }
         public string Secret { get; set; }
         public int VoteSessionDurationMinutes { get; set; }
         public string TwilioSid { get; set; }

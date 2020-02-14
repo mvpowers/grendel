@@ -5,6 +5,21 @@ namespace GrendelData.Users
 {
     public static class UserDataMapper
     {
+        public static User ToUser(this UserCreateRequest userCreateRequest, string passwordResetToken)
+        {
+            if (userCreateRequest == null) throw new ArgumentNullException(nameof(userCreateRequest));
+            if (string.IsNullOrEmpty(passwordResetToken)) throw new ArgumentNullException(nameof(passwordResetToken));
+
+            return new User()
+            {
+                Name = userCreateRequest.Name,
+                Phone = userCreateRequest.Phone,
+                PasswordResetToken = passwordResetToken,
+                IsAdmin = false,
+                IsActive = true
+            };
+        }
+        
         public static UserView ToUserView(this User user)
         {
             if (user == null) throw new ArgumentNullException(nameof(user));
