@@ -69,6 +69,7 @@
 import router from '../router';
 import { UserRequests } from '../requests';
 import { localStorageKeys, mutations, routes } from '../constants';
+import { digitize, digitLength } from '../helpers';
 
 export default {
   data: () => ({
@@ -79,16 +80,20 @@ export default {
   }),
   methods: {
     async authenticateUser() {
-      if (!this.formPhone || !this.formPassword) {
-        this.$toast.error('Phone and password cannot be empty');
+      if (!this.formPassword) {
+        this.$toast.error('Password is required');
+        return;
+      }
+
+      const phoneLength = digitLength(this.formPhone);
+      if (phoneLength !== 10) {
+        this.$toast.error('Phone is invalid. 10 Digits Required.');
         return;
       }
 
       try {
-        const phoneNumbersOnly = this.formPhone.match(/\d+/g).map(Number).join('');
-
         const userAuthRequest = {
-          phone: parseInt(phoneNumbersOnly, 10),
+          phone: digitize(this.formPhone),
           password: this.formPassword,
         };
 

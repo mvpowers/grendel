@@ -89,6 +89,8 @@ namespace GrendelApi.Services
         {
             try
             {
+                TwilioClient.Init(_appSettings.TwilioSid, _appSettings.TwilioAuthToken);
+                
                 var message = await MessageResource.CreateAsync(
                     body: $"Set your STW password: {_appSettings.AppUrl}/reset?token={passwordResetToken}",
                     from: new Twilio.Types.PhoneNumber(_appSettings.TwilioSendNumber),

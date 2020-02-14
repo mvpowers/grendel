@@ -49,8 +49,19 @@
             </VTab>
             <VTabItem key="user">
               <VCard flat>
+                <VCardTitle>
+                  <h3 class="mx-auto">
+                    Manual Actions
+                  </h3>
+                </VCardTitle>
                 <VCardText>
-                  user
+                  <VLayout justify-center>
+                    <VBtn
+                      color="success"
+                      @click="userCreateModalStatus = true">
+                      Create User
+                    </VBtn>
+                  </VLayout>
                 </VCardText>
               </VCard>
             </VTabItem>
@@ -58,16 +69,20 @@
         </VContent>
       </VFlex>
     </VLayout>
+    <UserCreateModal :modal-status.sync="userCreateModalStatus" />
   </VContainer>
 </template>
 
 <script>
+import UserCreateModal from '../components/UserCreateModal';
 import { SessionRequests } from '../requests';
 
 export default {
   name: 'Admin',
+  components: { UserCreateModal },
   data: () => ({
     activeTab: null,
+    userCreateModalStatus: false,
   }),
   methods: {
     async startSession() {

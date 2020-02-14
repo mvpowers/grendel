@@ -41,6 +41,7 @@
 <script>
 import { UserRequests } from '../requests';
 import { routes } from '../constants';
+import { digitize, digitLength } from '../helpers';
 
 export default {
   name: 'PasswordTokenForm',
@@ -50,12 +51,16 @@ export default {
   methods: {
     async createUserResetToken() {
       try {
-        const phoneNumbersOnly = this.formPhone.match(/\d+/g).map(Number).join('');
+        const phoneLength = digitLength(this.formPhone);
+        if (phoneLength !== 10) {
+          this.$toast.error('Phone is invalid. 10 Digits Required.');
+          return;
+        }
 
         const userTokenRequest = {
-          phone: parseInt(phoneNumbersOnly, 10),
+          phone: digitize(this.formPhone),
         };
-        const { data } = await UserRequests.createUserResetToken(userTokenRequest);
+        await UserRequests.createUserResetToken(userTokenRequest);
         this.$swal({
           icon: 'info',
           title: 'Password Recovery Sent',
@@ -63,7 +68,6 @@ export default {
           showConfirmButton: true,
         });
         this.$router.push({ name: routes.HOME });
-        console.info('TODO: remove console', data);
       } catch (e) {
         console.error(e);
       }
