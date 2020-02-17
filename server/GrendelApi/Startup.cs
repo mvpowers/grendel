@@ -18,7 +18,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Twilio.Rest.Studio.V1.Flow;
 
 namespace GrendelApi
 {
@@ -31,6 +30,20 @@ namespace GrendelApi
 
         public IConfiguration Configuration { get; set; }
 
+        private void BuildConfiguration()
+        {
+            var basePath = Environment.CurrentDirectory.Contains("GrendelApi")
+                ? Environment.CurrentDirectory
+                : $"{Environment.CurrentDirectory}/GrendelApi";
+            
+            var builder = new ConfigurationBuilder()
+                .SetBasePath(basePath)
+                .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables();
+
+            Configuration = builder.Build();
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
@@ -38,12 +51,7 @@ namespace GrendelApi
             services.AddControllers();
             services.AddApiVersioning();
             
-            var builder = new ConfigurationBuilder()
-                .SetBasePath($"{Environment.CurrentDirectory}/GrendelApi")
-                .AddJsonFile("appsettings.json")
-                .AddEnvironmentVariables();
-
-            Configuration = builder.Build();
+            BuildConfiguration();
             
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
