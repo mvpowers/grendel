@@ -20,5 +20,8 @@
     <PackageReference Include="Twilio" Version="5.37.4" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include="appsettings.json" CopyToOutputDirectory="Always" CopyToPublishDirectory="Always" />
+  </ItemGroup>
 
 </Project>

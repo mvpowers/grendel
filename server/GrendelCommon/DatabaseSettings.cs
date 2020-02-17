@@ -9,15 +9,13 @@ namespace GrendelCommon
         public static string GetConnectionString()
         {
             var environmentConnectionString = Environment.GetEnvironmentVariable("GRENDEL_CONNECTIONSTRING");
-            
+
             if (!string.IsNullOrEmpty(environmentConnectionString))
                 return environmentConnectionString;
-            
-            var root = Directory.GetParent(Directory.GetCurrentDirectory()).ToString();
-            var settingsLocation = Path.Combine(root, "GrendelCommon", "appsettings.json");
 
             var configBuilder = new ConfigurationBuilder()
-                .AddJsonFile(settingsLocation);
+                .SetBasePath($"{Environment.CurrentDirectory}/GrendelCommon")
+                .AddJsonFile("appsettings.json");
 
             var config = configBuilder.Build();
 
