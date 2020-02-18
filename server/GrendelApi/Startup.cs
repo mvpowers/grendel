@@ -35,7 +35,7 @@ namespace GrendelApi
             var basePath = Environment.CurrentDirectory.Contains("GrendelApi")
                 ? Environment.CurrentDirectory
                 : $"{Environment.CurrentDirectory}/GrendelApi";
-            
+
             var builder = new ConfigurationBuilder()
                 .SetBasePath(basePath)
                 .AddJsonFile("appsettings.json")
@@ -50,18 +50,18 @@ namespace GrendelApi
             services.AddCors();
             services.AddControllers();
             services.AddApiVersioning();
-            
+
             BuildConfiguration();
-            
+
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
-            
+
             // add swagger
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "Grendel API", Version = "v1" });
-            }); 
-            
+            });
+
             // configure jwt authentication
             var appSettings = appSettingsSection.Get<AppSettings>();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
@@ -84,29 +84,57 @@ namespace GrendelApi
                         ClockSkew = TimeSpan.Zero
                     };
                 });
-            
+
             services.AddDbContext<GrendelContext>(options =>
             {
                 options.UseNpgsql(DatabaseSettings.GetConnectionString());
             });
-            
+
             // configure DI for application services
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IUserRepository, UserRepository>();
-            
+
             services.AddScoped<IQuestionService, QuestionService>();
             services.AddScoped<IQuestionRepository, QuestionRepository>();
-            
+
             services.AddScoped<IVoteService, VoteService>();
             services.AddScoped<IVoteRepository, VoteRepository>();
-            
+
             services.AddScoped<IVoteOptionService, VoteOptionService>();
             services.AddScoped<IVoteOptionRepository, VoteOptionRepository>();
-            
+
             services.AddScoped<ILikeService, LikeService>();
             services.AddScoped<ILikeRepository, LikeRepository>();
-            
+
             services.AddScoped<ITextService, TextService>();
+        }
+
+        private static void UpdateDatabase(IApplicationBuilder app)
+        {
+            try
+            {
+                Console.WriteLine("here we go");
+                using var serviceScope = app.ApplicationServices
+                    .GetRequiredService<IServiceScopeFactory>()
+                    .CreateScope();
+
+                using var context = serviceScope.ServiceProvider.GetService<GrendelContext>();
+
+                if (context.Database.CanConnect())
+                {
+                    Console.WriteLine("Connected to DB");
+                    context.Database.Migrate();
+                }
+                else
+                {
+                    Console.WriteLine("Unable to connect to DB");
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw;
+            }
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -115,20 +143,22 @@ namespace GrendelApi
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                IdentityModelEventSource.ShowPII = true; 
-                
+                IdentityModelEventSource.ShowPII = true;
+
                 app.UseSwagger();
                 app.UseSwaggerUI(c =>
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "Grendel API");
                     c.RoutePrefix = string.Empty;
-                }); 
+                });
             }
+
+            UpdateDatabase(app);
 
             app.UseHttpsRedirection();
 
             app.UseRouting();
-            
+
             app.UseCors(x => x
                 .AllowAnyOrigin()
                 .AllowAnyMethod()

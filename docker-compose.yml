@@ -1,13 +1,16 @@
-version: '3'
+version: '3.4'
 services:
   db:
     image: 'bitnami/postgresql:latest'
+    container_name: grendel-db
     environment:
       - POSTGRESQL_USERNAME=user
       - POSTGRESQL_PASSWORD=pass
       - POSTGRESQL_DATABASE=grendel
     ports:
-      - '5050:5432'
+      - '5432:5432'
+    networks:
+      - app-tier
     volumes:
       - 'postgres_data:/bitnami/postgresql'
 
@@ -17,11 +20,17 @@ services:
       - db
     ports:
       - '8080:80'
+    networks:
+      - app-tier
 
   client:
     build: ./client
     ports:
     - '80:80'
+
+networks:
+  app-tier:
+    driver: bridge
 
 volumes:
   postgres_data:

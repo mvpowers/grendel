@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using Microsoft.Extensions.Configuration;
 
 namespace GrendelCommon
@@ -21,7 +20,6 @@ namespace GrendelCommon
                 .AddJsonFile("appsettings.json");
 
             var config = configBuilder.Build();
-
             return config.GetConnectionString("GrendelDb");
         }
     }
