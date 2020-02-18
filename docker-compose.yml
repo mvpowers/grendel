@@ -13,6 +13,7 @@ services:
       - app-tier
     volumes:
       - 'postgres_data:/bitnami/postgresql'
+    restart: always
 
   server:
     build: ./server
@@ -22,11 +23,13 @@ services:
       - '8080:80'
     networks:
       - app-tier
+    restart: always
 
   client:
     build: ./client
     ports:
     - '80:80'
+    restart: always
 
 networks:
   app-tier:
