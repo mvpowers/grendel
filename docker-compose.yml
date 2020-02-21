@@ -15,20 +15,24 @@ services:
       - 'postgres_data:/bitnami/postgresql'
     restart: always
 
-  server:
+  api:
     build: ./server
+    container_name: grendel-api
     depends_on:
       - db
-    ports:
-      - '8080:80'
+      - client
+    expose:
+      - '80'
     networks:
       - app-tier
     restart: always
 
   client:
     build: ./client
+    container_name: grendel-client
     ports:
     - '80:80'
+    - '443:443'
     networks:
       - app-tier
     restart: always
