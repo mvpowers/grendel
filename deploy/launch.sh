@@ -11,5 +11,6 @@ curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compos
 chmod +x /usr/local/bin/docker-compose
 
 # MAKE SURE TO COPY IN ACCESS TOKEN
+cd /home/ubuntu || exit
 git clone https://mvpowers:{ACCESS_TOKEN}@github.com/mvpowers/grendel.git
-/bin/bash /grendel/deploy/copy_env.sh
+/bin/bash ./grendel/deploy/copy_env.sh
