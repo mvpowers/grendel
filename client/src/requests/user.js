@@ -4,7 +4,7 @@ import requestInstance, { errorAlerts } from './index';
 const API_CONTROLLER = 'user';
 
 const nonAuthRequestInstance = axios.create({
-  baseURL: `${process.env.VUE_APP_API_URL}/api/${process.env.VUE_APP_API_VERSION}`,
+  baseURL: '/api/v1',
 });
 
 nonAuthRequestInstance.interceptors.response.use(

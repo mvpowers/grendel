@@ -38,7 +38,7 @@ export const errorAlerts = (error) => {
 };
 
 const requestInstance = axios.create({
-  baseURL: `${process.env.VUE_APP_API_URL}/api/${process.env.VUE_APP_API_VERSION}`,
+  baseURL: '/api/v1',
 });
 
 requestInstance.interceptors.request.use(

@@ -4,9 +4,9 @@ services:
     image: 'bitnami/postgresql:latest'
     container_name: grendel-db
     environment:
-      - POSTGRESQL_USERNAME=user
-      - POSTGRESQL_PASSWORD=pass
-      - POSTGRESQL_DATABASE=grendel
+      - POSTGRESQL_USERNAME="${DB_USERNAME}"
+      - POSTGRESQL_PASSWORD="${DB_PASSWORD}"
+      - POSTGRESQL_DATABASE="${DB_DATABASE}"
     ports:
       - '5432:5432'
     networks:
