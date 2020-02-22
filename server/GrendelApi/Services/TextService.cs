@@ -81,7 +81,7 @@ namespace GrendelApi.Services
             
             foreach (var recipientPhone in recipientPhones)
             {
-                await SendSessionStartText(recipientPhone);
+                await SendSessionExpireText(recipientPhone);
             }
         }
         
