@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using GrendelApi.Exceptions;
 using GrendelApi.Services;
@@ -45,6 +46,15 @@ namespace GrendelApi.Controllers
                 _logger.LogError(e.Message);
                 return UnprocessableEntity(new ErrorResponse(e.Message));
             }
+        }
+
+        [HttpGet("queue")]
+        public async Task<ActionResult<List<QuestionQueueView>>> ReadQueuedQuestions()
+        {
+            var questions = await _questionService.ReadQueuedQuestions();
+            if (questions == null) return new List<QuestionQueueView>();
+
+            return questions.ToQuestionQueueView();
         }
 
         [HttpPost]

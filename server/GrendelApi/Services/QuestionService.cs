@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using GrendelData;
 using GrendelData.Questions;
@@ -13,6 +14,7 @@ namespace GrendelApi.Services
         Task<Question> ReadActiveQuestion();
         Task<Question> SetNewActiveQuestion();
         Task<Question> ExpireActiveQuestion();
+        Task<List<Question>> ReadQueuedQuestions();
     }
     
     public class QuestionService : IQuestionService
@@ -31,6 +33,11 @@ namespace GrendelApi.Services
         public async Task<Question> ReadActiveQuestion()
         {
             return await _questionRepository.ReadActiveQuestion();
+        }
+
+        public async Task<List<Question>> ReadQueuedQuestions()
+        {
+            return await _questionRepository.ReadQueuedQuestions();
         }
 
         public async Task<Question> CreateQuestion(string authHeader, QuestionCreateRequest questionCreateRequest)

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -14,6 +15,7 @@ namespace GrendelData.Questions
         Task<Question> CreateQuestion(User user, QuestionCreateRequest questionCreateRequest);
         Task<Question> UpdateQuestion(Question question);
         Task<Question> ReadNextActiveQuestion();
+        Task<List<Question>> ReadQueuedQuestions();
     }
     
     public class QuestionRepository : IQuestionRepository
@@ -37,6 +39,40 @@ namespace GrendelData.Questions
                     .FirstOrDefaultAsync(x => x.IsActive == true);
 
                 return question;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+            }
+
+            return null;
+        }
+
+        public async Task<List<Question>> ReadQueuedQuestions()
+        {
+            try
+            {
+                var adminQuestions = await _context
+                    .Questions
+                    .AsNoTracking()
+                    .Where(x => x.TimeAsked == null)
+                    .Where(x => x.UserId == 1)
+                    .OrderBy(x => x.Id)
+                    .Take(3)
+                    .ToListAsync();
+                
+                var userQuestions = await _context
+                    .Questions
+                    .AsNoTracking()
+                    .Where(x => x.TimeAsked == null)
+                    .Where(x => x.UserId != 1)
+                    .OrderBy(x => x.Id)
+                    .Take(3)
+                    .ToListAsync();
+
+                var combinedQuestions = adminQuestions.Union(userQuestions).Take(3).ToList();
+                
+                return combinedQuestions;
             }
             catch (Exception e)
             {
@@ -91,12 +127,14 @@ namespace GrendelData.Questions
                 var newAdminSubmittedQuestion = await _context.Questions
                     .Where(x => x.TimeAsked == null)
                     .Where(x => x.UserId == 1)
+                    .OrderBy(x => x.Id)
                     .FirstOrDefaultAsync();
 
                 if (newAdminSubmittedQuestion != null) return newAdminSubmittedQuestion;
                 
                 var newUserSubmittedQuestion = await _context.Questions
                     .Where(x => x.TimeAsked == null)
+                    .OrderBy(x => x.Id)
                     .FirstOrDefaultAsync();
                 
                 if (newUserSubmittedQuestion != null) return newUserSubmittedQuestion;

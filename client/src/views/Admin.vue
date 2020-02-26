@@ -20,6 +20,10 @@
               session
             </VTab>
             <VTabItem key="session">
+              <QuestionQueue
+                :is-fetching="isQueuedQuestionsFetching"
+                :queued-questions="queuedQuestions" />
+
               <VCard flat>
                 <VCardTitle>
                   <h3 class="mx-auto">
@@ -75,15 +79,21 @@
 
 <script>
 import UserCreateModal from '../components/UserCreateModal';
-import { SessionRequests } from '../requests';
+import { QuestionRequests, SessionRequests } from '../requests';
+import QuestionQueue from '../components/QuestionQueue';
 
 export default {
   name: 'Admin',
-  components: { UserCreateModal },
+  components: { QuestionQueue, UserCreateModal },
   data: () => ({
     activeTab: null,
     userCreateModalStatus: false,
+    isQueuedQuestionsFetching: false,
+    queuedQuestions: [],
   }),
+  async mounted() {
+    await this.getQueuedQuestions();
+  },
   methods: {
     async startSession() {
       try {
@@ -133,10 +143,18 @@ export default {
         console.error(e);
       }
     },
+    async getQueuedQuestions() {
+      try {
+        this.isQueuedQuestionsFetching = true;
+        const { data } = await QuestionRequests.readQueuedQuestions();
+        this.queuedQuestions = data;
+      } catch (e) {
+        this.$toast.error('Error: getQueuedQuestions');
+        console.error(e);
+      } finally {
+        this.isQueuedQuestionsFetching = false;
+      }
+    },
   },
 };
 </script>
-
-<style scoped>
-
-</style>
