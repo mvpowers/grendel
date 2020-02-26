@@ -33,6 +33,7 @@
                 <VCardText>
                   <VLayout justify-center>
                     <VBtn
+                      :disabled="queuedQuestions.length === 0"
                       color="success"
                       @click="openStartSessionConfirm">
                       Start Session
