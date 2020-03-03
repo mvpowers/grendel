@@ -15,6 +15,7 @@ namespace GrendelApi.Services
         Task<Question> SetNewActiveQuestion();
         Task<Question> ExpireActiveQuestion();
         Task<List<Question>> ReadQueuedQuestions();
+        Task DeleteQuestion(int questionId);
     }
     
     public class QuestionService : IQuestionService
@@ -78,6 +79,14 @@ namespace GrendelApi.Services
             }
 
             return currentActiveQuestion;
+        }
+
+        public async Task DeleteQuestion(int questionId)
+        {
+            var question = await _questionRepository.ReadQuestionById(questionId);
+            if (question == null) throw new ArgumentNullException(nameof(question));
+            
+            await _questionRepository.DeleteQuestion(question);
         }
     }
 }

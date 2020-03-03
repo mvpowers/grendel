@@ -22,7 +22,8 @@
             <VTabItem key="session">
               <QuestionQueue
                 :is-fetching="isQueuedQuestionsFetching"
-                :queued-questions="queuedQuestions" />
+                :queued-questions="queuedQuestions"
+                @question-delete="getQueuedQuestions" />
 
               <VCard flat>
                 <VCardTitle>

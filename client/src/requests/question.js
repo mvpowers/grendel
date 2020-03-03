@@ -17,4 +17,9 @@ export class QuestionRequests {
     const url = `${API_CONTROLLER}/queue`;
     return requestInstance.get(url);
   }
+
+  static deleteQuestion(questionId) {
+    const url = `${API_CONTROLLER}/${questionId}`;
+    return requestInstance.delete(url);
+  }
 }

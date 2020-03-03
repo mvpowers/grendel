@@ -43,6 +43,7 @@
   </div>
 </template>
 <script>
+import { QuestionRequests } from '../requests';
 import LoadSpinner from './LoadSpinner';
 
 export default {
@@ -74,9 +75,15 @@ export default {
         console.error(e);
       }
     },
-    deleteQuestion(questionId) {
-      this.$toast.success('Question removed');
-      console.warn(`delete question ${questionId}`);
+    async deleteQuestion(questionId) {
+      try {
+        await QuestionRequests.deleteQuestion(questionId);
+        this.$emit('question-delete', questionId);
+        this.$toast.success('Question removed');
+      } catch (e) {
+        this.$toast.error('Error: deleteQuestion');
+        console.error(e);
+      }
     },
   },
 };

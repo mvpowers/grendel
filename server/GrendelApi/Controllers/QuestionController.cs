@@ -75,5 +75,20 @@ namespace GrendelApi.Controllers
                 return UnprocessableEntity(new ErrorResponse(e.Message));
             }
         }
+
+        [HttpDelete("{questionId}")]
+        public async Task<ActionResult> DeleteQuestion(int questionId)
+        {
+            try
+            {
+                await _questionService.DeleteQuestion(questionId);
+                return NoContent();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return UnprocessableEntity(new ErrorResponse(e.Message));
+            }
+        }
     }
 }

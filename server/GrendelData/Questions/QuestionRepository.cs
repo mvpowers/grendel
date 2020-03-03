@@ -16,6 +16,8 @@ namespace GrendelData.Questions
         Task<Question> UpdateQuestion(Question question);
         Task<Question> ReadNextActiveQuestion();
         Task<List<Question>> ReadQueuedQuestions();
+        Task<Question> ReadQuestionById(int questionId);
+        Task DeleteQuestion(Question question);
     }
     
     public class QuestionRepository : IQuestionRepository
@@ -118,6 +120,38 @@ namespace GrendelData.Questions
             }
             
             return null;
+        }
+
+        public async Task<Question> ReadQuestionById(int questionId)
+        {
+            try
+            {
+                var question = await _context.Questions.SingleOrDefaultAsync(x => x.Id == questionId);
+
+                if (question != null) return question;
+                throw new NoNullAllowedException("Question not found by ID");
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+            }
+
+            return null;
+        }
+
+        public async Task DeleteQuestion(Question question)
+        {
+            if (question == null) throw new ArgumentNullException(nameof(question));
+            
+            try
+            {
+                _context.Questions.Remove(question);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+            }
         }
         
         public async Task<Question> ReadNextActiveQuestion()
