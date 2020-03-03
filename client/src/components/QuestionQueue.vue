@@ -19,16 +19,22 @@
           </h3>
         </VCardTitle>
         <VCardText>
-          <VList>
-            <VListTile
-              v-for="(question, idx) in queuedQuestions"
-              :key="question.id"
-              prepend-icon="phone">
-              <VListTileAvatar>{{ idx + 1 }}</VListTileAvatar>
-              <VListTileContent>
-                <VListTileTitle>{{ question.inquiry }}</VListTileTitle>
-              </VListTileContent>
-            </VListTile>
+          <VList three-line>
+            <template v-for="question in queuedQuestions">
+              <VListTile :key="question.id">
+                <VListTileContent>
+                  <VListTileSubTitle>{{ question.inquiry }}</VListTileSubTitle>
+                </VListTileContent>
+                <VListTileAction>
+                  <VIcon
+                    color="red darken-2"
+                    class="delete-icon">
+                    remove_circle
+                  </VIcon>
+                </VListTileAction>
+              </VListTile>
+              <VDivider :key="question.id" />
+            </template>
           </VList>
         </VCardText>
       </VCard>
@@ -53,3 +59,8 @@ export default {
   },
 };
 </script>
+<style>
+  .delete-icon {
+    cursor: pointer;
+  }
+</style>

@@ -6,7 +6,7 @@
         sm8>
         <VLayout row>
           <VFlex>
-            <h1>Double Super Extreme Admin Center</h1>
+            <h1>Admin Center</h1>
           </VFlex>
           <VFlex class="grow" />
           <VBtn @click="$router.back()">
