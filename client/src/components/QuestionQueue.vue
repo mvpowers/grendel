@@ -33,7 +33,7 @@
                   </VIcon>
                 </VListTileAction>
               </VListTile>
-              <VDivider :key="question.id" />
+              <VDivider :key="`div_${question.id}`" />
             </template>
           </VList>
         </VCardText>

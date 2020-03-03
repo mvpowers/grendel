@@ -123,7 +123,7 @@ export default {
           showCancelButton: true,
         });
 
-        if (confirm) this.startSession();
+        if (confirm.value) this.startSession();
       } catch (e) {
         this.$toast.error('Error: openStartSessionConfirm');
         console.error(e);
@@ -138,7 +138,7 @@ export default {
           showCancelButton: true,
         });
 
-        if (confirm) this.endSession();
+        if (confirm.value) this.endSession();
       } catch (e) {
         this.$toast.error('Error: openEndSessionConfirm');
         console.error(e);
