@@ -28,7 +28,8 @@
                 <VListTileAction>
                   <VIcon
                     color="red darken-2"
-                    class="delete-icon">
+                    class="delete-icon"
+                    @click="openQuestionDeleteConfirm(question)">
                     remove_circle
                   </VIcon>
                 </VListTileAction>
@@ -55,6 +56,27 @@ export default {
     queuedQuestions: {
       required: true,
       type: Array,
+    },
+  },
+  methods: {
+    async openQuestionDeleteConfirm(question) {
+      try {
+        const confirm = await this.$swal.fire({
+          title: 'Confirm Question Removal',
+          text: question.inquiry,
+          icon: 'warning',
+          showCancelButton: true,
+        });
+
+        if (confirm.value) this.deleteQuestion(question.id);
+      } catch (e) {
+        this.$toast.error('Error: openStartSessionConfirm');
+        console.error(e);
+      }
+    },
+    deleteQuestion(questionId) {
+      this.$toast.success('Question removed');
+      console.warn(`delete question ${questionId}`);
     },
   },
 };
