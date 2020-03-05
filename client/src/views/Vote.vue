@@ -85,7 +85,7 @@ export default {
     async readActiveVoteOptions() {
       try {
         const { data } = await VoteOptionRequests.readActiveVoteOptions();
-        this.voteOptions = data.map((x, idx) => ({ ...x, avatar: `http://i.pravatar.cc/${150 + idx}` }));
+        this.voteOptions = data.map((x, idx) => ({ ...x, avatar: `https://i.pravatar.cc/${150 + idx}` }));
       } catch (e) {
         console.error(e);
       }
