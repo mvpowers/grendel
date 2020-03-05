@@ -34,7 +34,7 @@ namespace GrendelData.Votes
                 var activeQuestionId = await _context
                     .Questions
                     .AsNoTracking()
-                    .Where(x => x.IsActive == true)
+                    .Where(x => x.IsQuestionActive == true)
                     .Select(x => x.Id)
                     .FirstOrDefaultAsync();
             

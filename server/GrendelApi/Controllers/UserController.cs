@@ -43,6 +43,27 @@ namespace GrendelApi.Controllers
                 return UnprocessableEntity(new ErrorResponse(e.Message));
             }
         }
+        
+        [AllowAnonymous]
+        [HttpPost(("auth-token"))]
+        public async Task<ActionResult<UserView>> GetUserFromAuthToken([FromBody] UserInfoRequest userInfoRequest)
+        {
+            if (string.IsNullOrEmpty(userInfoRequest.Token))
+                return BadRequest(new ErrorResponse("Token cannot be empty"));
+
+            try
+            {
+                var user = await _userService.GetUserFromAuthToken(userInfoRequest.Token);
+                if (user == null) throw new UserNotFoundException();
+
+                return Ok(user.ToUserView());
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return UnprocessableEntity(new ErrorResponse(e.Message));
+            }
+        }
 
         [AllowAnonymous]
         [HttpPost("reset-token")]

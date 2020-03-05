@@ -36,10 +36,7 @@ namespace GrendelApi.Controllers
                 var question = await _questionService.ReadActiveQuestion();
                 if (question == null) throw new ReadEntityException(typeof(Question));
             
-                var voteSessionDurationMinutes = _voteService.ReadVoteSessionDurationMinutes();
-                var questionView = question.ToQuestionView(voteSessionDurationMinutes);
-            
-                return Ok(questionView);
+                return Ok(question.ToQuestionView());
             }
             catch (Exception e)
             {

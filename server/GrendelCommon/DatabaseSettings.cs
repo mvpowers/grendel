@@ -11,8 +11,11 @@ namespace GrendelCommon
 
             if (!string.IsNullOrEmpty(environmentConnectionString))
                 return environmentConnectionString;
-            
-            var basePath = Environment.CurrentDirectory.Replace("GrendelApi", "GrendelCommon");
+
+            var basePath = Environment.CurrentDirectory
+                .Replace("GrendelApi", "GrendelCommon")
+                .Replace("GrendelData", "GrendelCommon");
+                
             if (basePath == "/app") basePath = "/app/GrendelCommon";
 
             var configBuilder = new ConfigurationBuilder()

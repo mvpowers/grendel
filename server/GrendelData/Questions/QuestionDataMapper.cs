@@ -13,14 +13,14 @@ namespace GrendelData.Questions
             };
         }
 
-        public static QuestionView ToQuestionView(this Question question, int voteSessionDurationMinutes)
+        public static QuestionView ToQuestionView(this Question question)
         {
             return new QuestionView()
             {
                 Id = question.Id,
                 Inquiry = question.Inquiry,
                 TimeAsked = question.TimeAsked,
-                TimeVotingExpires = question.TimeAsked?.AddMinutes(voteSessionDurationMinutes)
+                IsSessionActive = question.IsSessionActive
             };
         }
 
@@ -29,7 +29,8 @@ namespace GrendelData.Questions
             return new QuestionQueueView()
             {
                 Id = question.Id,
-                Inquiry = question.Inquiry
+                Inquiry = question.Inquiry,
+                IsSessionActive = question.IsSessionActive
             };
         }
 

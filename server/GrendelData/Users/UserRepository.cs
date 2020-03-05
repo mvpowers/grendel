@@ -15,6 +15,7 @@ namespace GrendelData.Users
         Task<User> GetUserFromAuthHeader(string authHeader);
         Task<User> GetUserFromPhone(long phone);
         Task<User> GetUserFromPasswordResetToken(string passwordResetToken);
+        Task<User> GetUserFromAuthToken(string authToken);
         Task<List<UserView>> GetActiveUsers();
     }
     
@@ -95,6 +96,27 @@ namespace GrendelData.Users
             {
                 var user = await _context.Users
                     .FirstOrDefaultAsync(x => x.PasswordResetToken == passwordResetToken);
+                
+                if (user == null) throw new NoNullAllowedException(nameof(user));
+
+                return user;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+            }
+
+            return null;
+        }
+        
+        public async Task<User> GetUserFromAuthToken(string authToken)
+        {
+            if (authToken == null) throw new ArgumentNullException(nameof(authToken));
+
+            try
+            {
+                var user = await _context.Users
+                    .FirstOrDefaultAsync(x => x.Token == authToken);
                 
                 if (user == null) throw new NoNullAllowedException(nameof(user));
 

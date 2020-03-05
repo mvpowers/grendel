@@ -26,7 +26,7 @@ export default {
     question: {
       id: 0,
       inquiry: '',
-      timeVotingExpires: null,
+      timeAsked: null,
     },
   }),
   computed: {
@@ -67,7 +67,11 @@ export default {
     async readActiveQuestion() {
       try {
         const { data } = await QuestionRequests.readActiveQuestion();
-        this.question = { ...data, timeVotingExpires: Date.parse(data.timeVotingExpires) };
+
+        const timeVotingExpires = new Date(data.timeAsked);
+        timeVotingExpires.setHours(timeVotingExpires.getHours() + 4);
+
+        this.question = { ...data, timeVotingExpires };
       } catch (e) {
         console.error(e);
       }

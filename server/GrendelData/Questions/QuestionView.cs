@@ -7,6 +7,6 @@ namespace GrendelData.Questions
         public int Id { get; set; }
         public string Inquiry { get; set; }
         public DateTime? TimeAsked { get; set; }
-        public DateTime? TimeVotingExpires { get; set; }
+        public bool? IsSessionActive { get; set; }
     }
 }

@@ -54,13 +54,16 @@ namespace GrendelApi.Services
             var currentActiveQuestion = await _questionRepository.ReadActiveQuestion();
             if (currentActiveQuestion != null)
             {
-                currentActiveQuestion.IsActive = false;
+                currentActiveQuestion.IsQuestionActive = false;
+                currentActiveQuestion.IsSessionActive = false;
                 await _questionRepository.UpdateQuestion(currentActiveQuestion);
             }
 
             var nextActiveQuestion = await _questionRepository.ReadNextActiveQuestion();
             nextActiveQuestion.TimeAsked = DateTime.Now;
-            nextActiveQuestion.IsActive = true;
+            nextActiveQuestion.IsQuestionActive = true;
+            nextActiveQuestion.IsSessionActive = true;
+            
             await _questionRepository.UpdateQuestion(nextActiveQuestion);
 
             return nextActiveQuestion;
@@ -71,12 +74,8 @@ namespace GrendelApi.Services
             var currentActiveQuestion = await _questionRepository.ReadActiveQuestion();
             if (currentActiveQuestion == null) throw new ArgumentNullException(nameof(currentActiveQuestion));
             
-            var isSessionActive = DateTime.Now < currentActiveQuestion.TimeAsked?.AddMinutes(_appSettings.VoteSessionDurationMinutes);
-            if (isSessionActive)
-            {
-                currentActiveQuestion.TimeAsked = DateTime.Today;
-                await _questionRepository.UpdateQuestion(currentActiveQuestion);
-            }
+            currentActiveQuestion.IsSessionActive = false;
+            await _questionRepository.UpdateQuestion(currentActiveQuestion);
 
             return currentActiveQuestion;
         }

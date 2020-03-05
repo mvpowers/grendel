@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Swal from 'sweetalert2';
-import { localStorageKeys, routes } from './constants';
+import store from './store';
+import {actions, localStorageKeys, routes} from './constants';
 
 Vue.use(Router);
 
@@ -54,16 +55,20 @@ const router = new Router({
   ],
 });
 
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   const { requiresAuth } = to.meta;
   const authToken = localStorage.getItem(localStorageKeys.AUTH_TOKEN);
 
   if (requiresAuth && !authToken) {
-    Swal.fire('Unauthorized', 'Please login to continue', 'error');
-    next({ name: routes.HOME });
-  } else {
-    next();
+    await Swal.fire('Unauthorized', 'Please login to continue', 'error');
+    return next({ name: routes.HOME });
   }
+
+  if (requiresAuth && !store.state.userDataLoaded) {
+    await store.dispatch(actions.GET_USER_INFO, { token: authToken });
+  }
+
+  return next();
 });
 
 export default router;

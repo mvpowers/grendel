@@ -23,6 +23,11 @@ export class UserRequests {
     return nonAuthRequestInstance.post(url, userAuthRequest);
   }
 
+  static getUserFromAuthToken(userAuthToken) {
+    const url = `${API_CONTROLLER}/auth-token`;
+    return nonAuthRequestInstance.post(url, userAuthToken);
+  }
+
   static createUserResetToken(userTokenRequest) {
     const url = `${API_CONTROLLER}/reset-token`;
     return nonAuthRequestInstance.post(url, userTokenRequest);

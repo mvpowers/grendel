@@ -12,7 +12,8 @@ namespace GrendelData.Questions
         public int Id { get; set; }
         public string Inquiry { get; set; }
         public DateTime? TimeAsked { get; set; }
-        public bool? IsActive { get; set; }
+        public bool? IsQuestionActive { get; set; }
+        public bool? IsSessionActive { get; set; }
         
         public int UserId { get; set; }
         public User User { get; set; }
@@ -30,7 +31,11 @@ namespace GrendelData.Questions
         public void Configure(EntityTypeBuilder<Question> builder)
         {
             builder
-                .Property(x => x.IsActive)
+                .Property(x => x.IsQuestionActive)
+                .HasDefaultValue(false);
+            
+            builder
+                .Property(x => x.IsSessionActive)
                 .HasDefaultValue(false);
         }
     }

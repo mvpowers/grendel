@@ -13,7 +13,6 @@ namespace GrendelApi.Services
     {
         Task<Vote> CreateVote(string authHeader, VoteCreateRequest voteCreateRequest);
         Task<List<VoteView>> ReadActiveVotes(int userId);
-        int ReadVoteSessionDurationMinutes();
         Task<bool> UserHasActiveVote(int userId);
         Task<bool> HasVotingExpired();
         Task<Vote> ReadVoteById(int voteId);
@@ -24,14 +23,12 @@ namespace GrendelApi.Services
         private readonly IUserRepository _userRepository;
         private readonly IVoteRepository _voteRepository;
         private readonly IQuestionRepository _questionRepository;
-        private readonly IOptions<AppSettings> _appSettings;
 
-        public VoteService(IUserRepository userRepository, IVoteRepository voteRepository, IQuestionRepository questionRepository, IOptions<AppSettings> appSettings)
+        public VoteService(IUserRepository userRepository, IVoteRepository voteRepository, IQuestionRepository questionRepository)
         {
             _userRepository = userRepository;
             _voteRepository = voteRepository;
             _questionRepository = questionRepository;
-            _appSettings = appSettings;
         }
 
         public async Task<List<VoteView>> ReadActiveVotes(int userId)
@@ -49,12 +46,6 @@ namespace GrendelApi.Services
             return vote;
         }
 
-        public int ReadVoteSessionDurationMinutes()
-        {
-            var appSettings = _appSettings.Value;
-            return appSettings.VoteSessionDurationMinutes;
-        }
-        
         public async Task<bool> UserHasActiveVote(int userId)
         {
             var activeQuestion = await _questionRepository.ReadActiveQuestion();
@@ -65,11 +56,9 @@ namespace GrendelApi.Services
 
         public async Task<bool> HasVotingExpired()
         {
-            var voteSessionDurationMinutes = ReadVoteSessionDurationMinutes();
             var activeQuestion = await _questionRepository.ReadActiveQuestion();
-            var questionTimeExpires = activeQuestion.TimeAsked?.AddMinutes(voteSessionDurationMinutes);
 
-            return DateTime.Now > questionTimeExpires;
+            return activeQuestion.IsSessionActive != true;
         }
 
         public async Task<Vote> ReadVoteById(int voteId)

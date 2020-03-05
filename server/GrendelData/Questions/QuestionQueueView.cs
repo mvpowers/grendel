@@ -4,5 +4,6 @@ namespace GrendelData.Questions
     {
         public int Id { get; set; }
         public string Inquiry { get; set; }
+        public bool? IsSessionActive { get; set; }
     }
 }
