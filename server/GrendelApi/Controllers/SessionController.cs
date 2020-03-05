@@ -40,10 +40,10 @@ namespace GrendelApi.Controllers
                 var user = await _userService.GetUserFromAuthHeader(authHeader);
                 if (user == null) throw new UserNotFoundException();
 
-                var hasVotingExpired = await _voteService.HasVotingExpired();
+                var hasActiveSession = await _voteService.HasActiveSession();
                 var hasActiveVote = await _voteService.UserHasActiveVote(user.Id);
 
-                return user.ToUserSessionView(hasVotingExpired, hasActiveVote);
+                return user.ToUserSessionView(hasActiveSession, hasActiveVote);
             }
             catch (Exception e)
             {

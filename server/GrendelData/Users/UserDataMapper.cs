@@ -42,14 +42,14 @@ namespace GrendelData.Users
             return users.ConvertAll(x => x.ToUserView());
         }
 
-        public static UserSessionView ToUserSessionView(this User user, bool hasVotingExpired, bool hasActiveVote)
+        public static UserSessionView ToUserSessionView(this User user, bool hasActiveSession, bool hasActiveVote)
         {
             if (user == null) throw new ArgumentNullException(nameof(user));
             
             return new UserSessionView()
             {
                 Id = user.Id,
-                HasVotingExpired = hasVotingExpired,
+                HasActiveSession = hasActiveSession,
                 HasActiveVote = hasActiveVote
             };
         }

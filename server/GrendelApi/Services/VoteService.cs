@@ -14,7 +14,7 @@ namespace GrendelApi.Services
         Task<Vote> CreateVote(string authHeader, VoteCreateRequest voteCreateRequest);
         Task<List<VoteView>> ReadActiveVotes(int userId);
         Task<bool> UserHasActiveVote(int userId);
-        Task<bool> HasVotingExpired();
+        Task<bool> HasActiveSession();
         Task<Vote> ReadVoteById(int voteId);
     }
     
@@ -54,11 +54,11 @@ namespace GrendelApi.Services
             return activeUserVote != null;
         }
 
-        public async Task<bool> HasVotingExpired()
+        public async Task<bool> HasActiveSession()
         {
             var activeQuestion = await _questionRepository.ReadActiveQuestion();
 
-            return activeQuestion.IsSessionActive != true;
+            return activeQuestion.IsSessionActive == true;
         }
 
         public async Task<Vote> ReadVoteById(int voteId)

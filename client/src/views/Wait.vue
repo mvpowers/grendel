@@ -21,7 +21,6 @@ export default {
   components: { LoadSpinner },
   data: () => ({
     isPageLoading: false,
-    expiration: null,
     countdown: null,
     question: {
       id: 0,

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using GrendelApi.Exceptions;
 using GrendelData;
 using GrendelData.Questions;
 using GrendelData.Users;
@@ -83,7 +84,10 @@ namespace GrendelApi.Services
         public async Task DeleteQuestion(int questionId)
         {
             var question = await _questionRepository.ReadQuestionById(questionId);
+            
             if (question == null) throw new ArgumentNullException(nameof(question));
+            if (question.IsQuestionActive.HasValue) throw new DeleteEntityException(nameof(question));
+            if (question.IsSessionActive.HasValue) throw new DeleteEntityException(nameof(question));
             
             await _questionRepository.DeleteQuestion(question);
         }

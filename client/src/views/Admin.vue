@@ -34,12 +34,13 @@
                 <VCardText>
                   <VLayout justify-center>
                     <VBtn
-                      :disabled="queuedQuestions.length === 0"
+                      :disabled="hasActiveSession || queuedQuestions.length === 0"
                       color="success"
                       @click="openStartSessionConfirm">
                       Start Session
                     </VBtn>
                     <VBtn
+                      :disabled="!hasActiveSession"
                       color="error"
                       @click="openEndSessionConfirm">
                       End Session
@@ -89,18 +90,22 @@ export default {
   components: { QuestionQueue, UserCreateModal },
   data: () => ({
     activeTab: null,
+    hasActiveSession: null,
     userCreateModalStatus: false,
     isQueuedQuestionsFetching: false,
     queuedQuestions: [],
   }),
   async mounted() {
     await this.getQueuedQuestions();
+    await this.getSessionInfo();
   },
   methods: {
     async startSession() {
       try {
         await SessionRequests.startSession();
         this.$toast.success('Session started');
+        this.hasActiveSession = true;
+        this.queuedQuestions.splice(0, 1);
       } catch (e) {
         this.$toast.error('Session start failed');
         console.error(e);
@@ -110,8 +115,18 @@ export default {
       try {
         await SessionRequests.expireSession();
         this.$toast.success('Session ended');
+        this.hasActiveSession = false;
       } catch (e) {
         this.$toast.error('Session end failed');
+        console.error(e);
+      }
+    },
+    async getSessionInfo() {
+      try {
+        const { data } = await SessionRequests.getUserSession();
+        this.hasActiveSession = data.hasActiveSession;
+      } catch (e) {
+        this.$toast.error('Session info failed');
         console.error(e);
       }
     },

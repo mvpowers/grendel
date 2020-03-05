@@ -37,7 +37,7 @@ Vue.mixin({
     async routeVoteFlow() {
       try {
         const { data } = await SessionRequests.getUserSession();
-        if (data.hasVotingExpired) return router.push({ name: routes.RESULT });
+        if (!data.hasActiveSession) return router.push({ name: routes.RESULT });
         if (data.hasActiveVote) return router.push({ name: routes.WAIT });
         return router.push({ name: routes.VOTE });
       } catch (e) {

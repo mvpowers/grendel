@@ -2,7 +2,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import { mutations, actions } from './constants';
-import {UserRequests} from "./requests";
+import { UserRequests } from './requests';
 
 Vue.use(Vuex);
 
