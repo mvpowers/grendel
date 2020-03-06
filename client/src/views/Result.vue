@@ -5,7 +5,7 @@
       <div class="title text-xs-center ma-3">
         {{ question.inquiry }}
       </div>
-      <WarningAlert v-if="votes.length === 0" />
+      <WarningAlert v-if="!votes.length" />
       <ResultGraph
         v-if="voteLabels.length && voteValues.length"
         :values="voteValues"
@@ -104,7 +104,7 @@ export default {
   async mounted() {
     this.isPageLoading = true;
 
-    await this.readActiveVoteOptions();
+    await this.readVoteOptions();
     await this.readActiveQuestion();
     await this.readActiveVotes();
 
@@ -129,9 +129,9 @@ export default {
         console.error(e);
       }
     },
-    async readActiveVoteOptions() {
+    async readVoteOptions() {
       try {
-        const { data } = await VoteOptionRequests.readActiveVoteOptions();
+        const { data } = await VoteOptionRequests.readVoteOptions();
         this.voteOptions = data;
       } catch (e) {
         console.error(e);

@@ -11,6 +11,7 @@ namespace GrendelData.VoteOptions
     public interface IVoteOptionRepository
     {
         Task<VoteOption> CreateVoteOption(VoteOptionCreateRequest voteOptionCreateRequest);
+        Task<List<VoteOption>> ReadVoteOptions();
         Task<List<VoteOption>> ReadActiveVoteOptions();
     }
     
@@ -25,6 +26,25 @@ namespace GrendelData.VoteOptions
             _context = context;
         }
 
+        public async Task<List<VoteOption>> ReadVoteOptions()
+        {
+            try
+            {
+                var voteOptions = await _context
+                    .VoteOptions
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                return voteOptions;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+            }
+
+            return null;
+        }
+        
         public async Task<List<VoteOption>> ReadActiveVoteOptions()
         {
             try

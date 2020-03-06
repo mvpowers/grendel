@@ -7,6 +7,7 @@ namespace GrendelApi.Services
     public interface IVoteOptionService
     {
         Task<VoteOption> CreateVoteOption(VoteOptionCreateRequest voteOptionCreateRequest);
+        Task<List<VoteOption>> ReadVoteOptions();
         Task<List<VoteOption>> ReadActiveVoteOptions();
     }
     
@@ -19,6 +20,11 @@ namespace GrendelApi.Services
             _voteOptionRepository = voteOptionRepository;
         }
 
+        public async Task<List<VoteOption>> ReadVoteOptions()
+        {
+            return await _voteOptionRepository.ReadVoteOptions();
+        }
+        
         public async Task<List<VoteOption>> ReadActiveVoteOptions()
         {
             return await _voteOptionRepository.ReadActiveVoteOptions();
