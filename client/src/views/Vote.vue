@@ -85,7 +85,9 @@ export default {
     async readActiveVoteOptions() {
       try {
         const { data } = await VoteOptionRequests.readActiveVoteOptions();
-        this.voteOptions = data.map((x, idx) => ({ ...x, avatar: `https://i.pravatar.cc/${150 + idx}` }));
+        this.voteOptions = data
+          .map((x, idx) => ({ ...x, avatar: `https://i.pravatar.cc/${150 + idx}` }))
+          .sort((a, b) => (a.name.toLowerCase() > b.name.toLowerCase() ? 1 : 0));
       } catch (e) {
         console.error(e);
       }

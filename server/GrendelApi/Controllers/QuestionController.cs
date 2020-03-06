@@ -18,15 +18,12 @@ namespace GrendelApi.Controllers
     {
         private readonly ILogger<QuestionController> _logger;
         private readonly IQuestionService _questionService;
-        private readonly IVoteService _voteService;
 
-        public QuestionController(ILogger<QuestionController> logger, IQuestionService questionService, IVoteService voteService)
+        public QuestionController(ILogger<QuestionController> logger, IQuestionService questionService)
         {
             _logger = logger;
             _questionService = questionService;
-            _voteService = voteService;
         }
-
         
         [HttpGet("active")]
         public async Task<ActionResult<QuestionView>> ReadActiveQuestion()
