@@ -23,6 +23,11 @@ namespace GrendelData.Questions
                 IsSessionActive = question.IsSessionActive
             };
         }
+        
+        public static List<QuestionView> ToQuestionView(this List<Question> questions)
+        {
+            return questions.ConvertAll(x => x.ToQuestionView());
+        }
 
         public static QuestionQueueView ToQuestionQueueView(this Question question)
         {

@@ -18,6 +18,7 @@ namespace GrendelData.Questions
         Task<List<Question>> ReadQueuedQuestions();
         Task<Question> ReadQuestionById(int questionId);
         Task DeleteQuestion(Question question);
+        Task<List<Question>> ReadQuestionHistory();
     }
     
     public class QuestionRepository : IQuestionRepository
@@ -177,9 +178,29 @@ namespace GrendelData.Questions
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
+                return null;
             }
+        }
 
-            return null;
+        public async Task<List<Question>> ReadQuestionHistory()
+        {
+            try
+            {
+                var questions = await _context.Questions
+                    .AsNoTracking()
+                    .Where(x => x.TimeAsked.HasValue)
+                    .Where(x => x.IsQuestionActive != true)
+                    .Where(x => x.IsSessionActive != true)
+                    .OrderByDescending(x => x.TimeAsked)
+                    .ToListAsync();
+
+                return questions;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return null;
+            }
         }
     }
 }

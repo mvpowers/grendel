@@ -17,14 +17,16 @@
               <VToolbarTitle>Result History</VToolbarTitle>
             </VToolbar>
             <VList two-line>
-              <template>
-                <VListTile>
+              <template v-for="question in questionList">
+                <VListTile
+                  :key="question.id"
+                  @click="goToResultHistory(question.id)">
                   <VListTileContent>
-                    <VListTileTitle>Who is most likely to eat a donkey?</VListTileTitle>
-                    <VListTileSubTitle>wed october 2, 2020</VListTileSubTitle>
+                    <VListTileTitle>{{ question.inquiry }}</VListTileTitle>
+                    <VListTileSubTitle>{{ question.timeAsked }}</VListTileSubTitle>
                   </VListTileContent>
                 </VListTile>
-                <VDivider />
+                <VDivider :key="`div+${question.id}`" />
               </template>
             </VList>
           </VCard>
@@ -35,36 +37,32 @@
 </template>
 
 <script>
+import moment from 'moment';
 import { QuestionRequests } from '../requests';
+import { routes } from '../constants';
 
 export default {
-  name: 'SubmitQuestion',
+  name: 'ResultHistory',
   data: () => ({
-    formQuestion: 'Who is most likely to ',
+    questionList: [],
   }),
+  async mounted() {
+    await this.readQuestionHistory();
+  },
   methods: {
-    async submitQuestion() {
-      if (this.formQuestion.length < 15) {
-        this.$toast.error('Invalid question');
-        return;
-      }
-
-      if (this.formQuestion === 'Who is most likely to ') {
-        this.$toast.error('Invalid question');
-        return;
-      }
-
+    async readQuestionHistory() {
       try {
-        const createQuestionRequest = {
-          inquiry: this.formQuestion,
-        };
-
-        await QuestionRequests.createQuestion(createQuestionRequest);
-        this.$toast.success('Question submitted');
-        this.$router.back();
+        const { data } = await QuestionRequests.readQuestionHistory();
+        this.questionList = data.map(x => ({
+          ...x,
+          timeAsked: moment(x.timeAsked).format('LL'),
+        }));
       } catch (e) {
         console.error(e);
       }
+    },
+    goToResultHistory(questionId) {
+      this.$router.push({ name: routes.RESULT, query: { question_id: questionId } });
     },
     goBack() {
       this.$router.back();

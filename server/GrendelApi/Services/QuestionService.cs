@@ -16,6 +16,7 @@ namespace GrendelApi.Services
         Task<Question> ExpireActiveQuestion();
         Task<List<Question>> ReadQueuedQuestions();
         Task DeleteQuestion(int questionId);
+        Task<List<Question>> ReadQuestionHistory();
     }
     
     public class QuestionService : IQuestionService
@@ -92,6 +93,11 @@ namespace GrendelApi.Services
             if (question.IsSessionActive == true) throw new DeleteEntityException(typeof(Question));
             
             await _questionRepository.DeleteQuestion(question);
+        }
+
+        public async Task<List<Question>> ReadQuestionHistory()
+        {
+            return await _questionRepository.ReadQuestionHistory();
         }
     }
 }

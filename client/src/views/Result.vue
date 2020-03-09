@@ -5,6 +5,11 @@
       <div class="title text-xs-center ma-3">
         {{ question.inquiry }}
       </div>
+      <div
+        v-if="$props.questionId"
+        class="subheading text-xs-center mb-3">
+        {{ question.timeAsked }}
+      </div>
       <WarningAlert v-if="!votes.length" />
       <ResultGraph
         v-if="voteLabels.length && voteValues.length"
@@ -45,6 +50,7 @@
 </template>
 
 <script>
+import moment from 'moment';
 import ResultGraph from '../components/ResultGraph';
 import LoadSpinner from '../components/LoadSpinner';
 import WarningAlert from '../components/WarningAlert';
@@ -61,7 +67,7 @@ export default {
   props: {
     questionId: {
       required: false,
-      type: String,
+      type: [String, Number],
       default: null,
     },
   },
@@ -141,7 +147,10 @@ export default {
     async readQuestionById(questionId) {
       try {
         const { data } = await QuestionRequests.readQuestionById(questionId);
-        this.question = data;
+        this.question = {
+          ...data,
+          timeAsked: moment(data.timeAsked).format('LL'),
+        };
       } catch (e) {
         console.error(e);
       }

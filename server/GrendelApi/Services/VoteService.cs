@@ -1,11 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using GrendelData;
 using GrendelData.Questions;
 using GrendelData.Users;
 using GrendelData.Votes;
-using Microsoft.Extensions.Options;
 
 namespace GrendelApi.Services
 {

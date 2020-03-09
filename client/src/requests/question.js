@@ -18,6 +18,11 @@ export class QuestionRequests {
     return requestInstance.get(url);
   }
 
+  static readQuestionHistory() {
+    const url = `${API_CONTROLLER}/history`;
+    return requestInstance.get(url);
+  }
+
   static readQueuedQuestions() {
     const url = `${API_CONTROLLER}/queue`;
     return requestInstance.get(url);

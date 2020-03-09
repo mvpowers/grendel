@@ -46,6 +46,15 @@
           </VListTileContent>
         </VListTile>
         <VDivider />
+        <!-- HOME -->
+        <VListTile @click="goHome">
+          <VListTileAction>
+            <VIcon>home</VIcon>
+          </VListTileAction>
+          <VListTileContent>
+            <VListTileTitle>Home</VListTileTitle>
+          </VListTileContent>
+        </VListTile>
         <!-- ADMIN CENTER -->
         <VListTile
           v-if="showAdminCenter"
@@ -106,6 +115,10 @@ export default {
     },
   },
   methods: {
+    goHome() {
+      this.drawer = false;
+      this.$router.push({ name: routes.WAIT });
+    },
     signout() {
       localStorage.clear();
       this.drawer = false;

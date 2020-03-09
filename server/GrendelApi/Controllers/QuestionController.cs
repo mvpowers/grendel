@@ -58,6 +58,22 @@ namespace GrendelApi.Controllers
                 return UnprocessableEntity(new ErrorResponse(e.Message));
             }
         }
+        
+        [HttpGet("history")]
+        public async Task<ActionResult<QuestionView>> ReadQuestionHistory()
+        {
+            try
+            {
+                var questions = await _questionService.ReadQuestionHistory();
+            
+                return Ok(questions.ToQuestionView());
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return UnprocessableEntity(new ErrorResponse(e.Message));
+            }
+        }
 
         [HttpGet("queue")]
         public async Task<ActionResult<List<QuestionQueueView>>> ReadQueuedQuestions()
