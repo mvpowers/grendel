@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Router from 'vue-router';
 import Swal from 'sweetalert2';
 import store from './store';
-import {actions, localStorageKeys, routes} from './constants';
+import { actions, localStorageKeys, routes } from './constants';
 
 Vue.use(Router);
 
@@ -32,6 +32,13 @@ const router = new Router({
       path: '/result',
       name: routes.RESULT,
       component: () => import('./views/Result'),
+      props: route => ({ questionId: route.query.question_id }),
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/result-history',
+      name: routes.RESULT_HISTORY,
+      component: () => import('./views/ResultHistory'),
       meta: { requiresAuth: true },
     },
     {

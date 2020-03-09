@@ -38,9 +38,15 @@ namespace GrendelData.Votes
         public static List<VoteView> ToVoteView(this List<Vote> votes, int userId)
         {
             if (votes == null) throw new ArgumentNullException(nameof(votes));
-            if (userId <= 0) throw new ArgumentOutOfRangeException(nameof(userId));
             
             return votes.ConvertAll(x => x.ToVoteView(userId));
+        }
+        
+        public static List<VoteView> ToVoteView(this List<Vote> votes)
+        {
+            if (votes == null) throw new ArgumentNullException(nameof(votes));
+            
+            return votes.ConvertAll(x => x.ToVoteView(0));
         }
     }
 }

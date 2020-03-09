@@ -6,6 +6,7 @@ export const routes = {
   RESET: 'reset',
   SUBMIT_QUESTION: 'submit_question',
   ADMIN_CENTER: 'admin_center',
+  RESULT_HISTORY: 'result_history',
 };
 
 export const localStorageKeys = {

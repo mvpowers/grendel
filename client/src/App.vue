@@ -36,6 +36,16 @@
           </VListTileContent>
         </VListTile>
         <VDivider />
+        <!-- HISTORY -->
+        <VListTile @click="viewResultHistory">
+          <VListTileAction>
+            <VIcon>history</VIcon>
+          </VListTileAction>
+          <VListTileContent>
+            <VListTileTitle>Result History</VListTileTitle>
+          </VListTileContent>
+        </VListTile>
+        <VDivider />
         <!-- ADMIN CENTER -->
         <VListTile
           v-if="showAdminCenter"
@@ -120,6 +130,10 @@ export default {
         title: errorTitle.join(', '),
         text: 'Your discontent has been noted',
       });
+    },
+    viewResultHistory() {
+      this.drawer = false;
+      this.$router.push({ name: routes.RESULT_HISTORY });
     },
     submitFeatureRequest() {
       this.drawer = false;

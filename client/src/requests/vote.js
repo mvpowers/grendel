@@ -8,6 +8,15 @@ export class VoteRequests {
     return requestInstance.get(url);
   }
 
+  static readVotesByQuestionId(questionId) {
+    const url = `${API_CONTROLLER}`;
+    return requestInstance.get(url, {
+      params: {
+        questionId,
+      },
+    });
+  }
+
   static createVote(voteCreateRequest) {
     const url = `${API_CONTROLLER}/`;
     return requestInstance.post(url, voteCreateRequest);

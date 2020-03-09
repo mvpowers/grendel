@@ -13,6 +13,7 @@ namespace GrendelApi.Services
     {
         Task<Vote> CreateVote(string authHeader, VoteCreateRequest voteCreateRequest);
         Task<List<VoteView>> ReadActiveVotes(int userId);
+        Task<List<VoteView>> ReadVotesByQuestionId(int questionId);
         Task<bool> UserHasActiveVote(int userId);
         Task<bool> HasActiveSession();
         Task<Vote> ReadVoteById(int voteId);
@@ -36,6 +37,13 @@ namespace GrendelApi.Services
             var votes = await _voteRepository.ReadActiveVotes();
             
             return votes.ToVoteView(userId);
+        }
+        
+        public async Task<List<VoteView>> ReadVotesByQuestionId(int questionId)
+        {
+            var votes = await _voteRepository.ReadVotesByQuestionId(questionId);
+            
+            return votes.ToVoteView();
         }
 
         public async Task<Vote> CreateVote(string authHeader, VoteCreateRequest voteCreateRequest)

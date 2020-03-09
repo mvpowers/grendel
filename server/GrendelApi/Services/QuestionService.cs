@@ -2,16 +2,15 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using GrendelApi.Exceptions;
-using GrendelData;
 using GrendelData.Questions;
 using GrendelData.Users;
-using Microsoft.Extensions.Options;
 
 namespace GrendelApi.Services
 {
     public interface IQuestionService
     {
         Task<Question> CreateQuestion(string authHeader, QuestionCreateRequest questionCreateRequest);
+        Task<Question> ReadQuestionById(int questionId);
         Task<Question> ReadActiveQuestion();
         Task<Question> SetNewActiveQuestion();
         Task<Question> ExpireActiveQuestion();
@@ -21,17 +20,20 @@ namespace GrendelApi.Services
     
     public class QuestionService : IQuestionService
     {
-        private readonly IAppSettings _appSettings;
         private readonly IQuestionRepository _questionRepository;
         private readonly IUserRepository _userRepository;
 
-        public QuestionService(IOptions<AppSettings> appSettings, IQuestionRepository questionRepository, IUserRepository userRepository)
+        public QuestionService(IQuestionRepository questionRepository, IUserRepository userRepository)
         {
-            _appSettings = appSettings.Value;
             _questionRepository = questionRepository;
             _userRepository = userRepository;
         }
 
+        public async Task<Question> ReadQuestionById(int questionId)
+        {
+            return await _questionRepository.ReadQuestionById(questionId);
+        }
+        
         public async Task<Question> ReadActiveQuestion()
         {
             return await _questionRepository.ReadActiveQuestion();
@@ -86,8 +88,8 @@ namespace GrendelApi.Services
             var question = await _questionRepository.ReadQuestionById(questionId);
             
             if (question == null) throw new ArgumentNullException(nameof(question));
-            if (question.IsQuestionActive.HasValue) throw new DeleteEntityException(nameof(question));
-            if (question.IsSessionActive.HasValue) throw new DeleteEntityException(nameof(question));
+            if (question.IsQuestionActive == true) throw new DeleteEntityException(typeof(Question));
+            if (question.IsSessionActive == true) throw new DeleteEntityException(typeof(Question));
             
             await _questionRepository.DeleteQuestion(question);
         }

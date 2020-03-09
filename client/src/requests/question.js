@@ -13,6 +13,11 @@ export class QuestionRequests {
     return requestInstance.get(url);
   }
 
+  static readQuestionById(questionId) {
+    const url = `${API_CONTROLLER}/${questionId}`;
+    return requestInstance.get(url);
+  }
+
   static readQueuedQuestions() {
     const url = `${API_CONTROLLER}/queue`;
     return requestInstance.get(url);

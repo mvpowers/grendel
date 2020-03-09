@@ -58,6 +58,13 @@ import {
 export default {
   name: 'Result',
   components: { ResultGraph, LoadSpinner, WarningAlert },
+  props: {
+    questionId: {
+      required: false,
+      type: String,
+      default: null,
+    },
+  },
   data: () => ({
     isPageLoading: false,
     question: {
@@ -99,14 +106,24 @@ export default {
     },
   },
   async beforeMount() {
-    await this.routeVoteFlow();
+    if (!this.$route.query.question_id) {
+      await this.routeVoteFlow();
+    }
   },
   async mounted() {
     this.isPageLoading = true;
 
     await this.readVoteOptions();
-    await this.readActiveQuestion();
-    await this.readActiveVotes();
+
+    if (this.$props.questionId) {
+      const { questionId } = this.$props;
+
+      await this.readVotesByQuestionId(questionId);
+      await this.readQuestionById(questionId);
+    } else {
+      await this.readActiveQuestion();
+      await this.readActiveVotes();
+    }
 
     this.$nextTick(() => {
       this.isPageLoading = false;
@@ -121,9 +138,25 @@ export default {
         console.error(e);
       }
     },
+    async readQuestionById(questionId) {
+      try {
+        const { data } = await QuestionRequests.readQuestionById(questionId);
+        this.question = data;
+      } catch (e) {
+        console.error(e);
+      }
+    },
     async readActiveVotes() {
       try {
         const { data } = await VoteRequests.readActiveVotes();
+        this.votes = data;
+      } catch (e) {
+        console.error(e);
+      }
+    },
+    async readVotesByQuestionId(questionId) {
+      try {
+        const { data } = await VoteRequests.readVotesByQuestionId(questionId);
         this.votes = data;
       } catch (e) {
         console.error(e);
@@ -138,6 +171,8 @@ export default {
       }
     },
     async likeCommentToggle(vote) {
+      if (this.$props.questionId) return;
+
       if (vote.currentUserLike) {
         await this.deleteLike(vote.id);
       } else {

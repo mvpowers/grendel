@@ -25,6 +25,23 @@ namespace GrendelApi.Controllers
             _questionService = questionService;
         }
         
+        [HttpGet("{questionId}")]
+        public async Task<ActionResult<QuestionView>> ReadQuestionById(int questionId)
+        {
+            try
+            {
+                var question = await _questionService.ReadQuestionById(questionId);
+                if (question == null) throw new ReadEntityException(typeof(Question));
+            
+                return Ok(question.ToQuestionView());
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return UnprocessableEntity(new ErrorResponse(e.Message));
+            }
+        }
+        
         [HttpGet("active")]
         public async Task<ActionResult<QuestionView>> ReadActiveQuestion()
         {

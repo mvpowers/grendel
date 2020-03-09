@@ -12,6 +12,7 @@ namespace GrendelData.Votes
     {
         Task<Vote> CreateVote(User user, VoteCreateRequest voteCreateRequest);
         Task<List<Vote>> ReadActiveVotes();
+        Task<List<Vote>> ReadVotesByQuestionId(int questionId);
         Task<Vote> GetVoteByUserId(int userId, int voteId);
         Task<Vote> GetVoteByVoteId(int voteId);
     }
@@ -50,9 +51,28 @@ namespace GrendelData.Votes
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
+                return null;
             }
+        }
 
-            return null;
+        public async Task<List<Vote>> ReadVotesByQuestionId(int questionId)
+        {
+            try
+            {
+                var votes = await _context
+                    .Votes
+                    .AsNoTracking()
+                    .Where(x => x.QuestionId == questionId)
+                    .Include(x => x.Likes)
+                    .ToListAsync();
+
+                return votes;
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return null;
+            }
         }
 
         public async Task<Vote> CreateVote(User user, VoteCreateRequest voteCreateRequest)
@@ -71,9 +91,8 @@ namespace GrendelData.Votes
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
+                return null;
             }
-
-            return null;
         }
 
         public async Task<Vote> GetVoteByUserId(int userId, int questionId)
@@ -93,9 +112,8 @@ namespace GrendelData.Votes
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
+                return null;
             }
-
-            return null;
         }
         
         public async Task<Vote> GetVoteByVoteId(int voteId)
@@ -114,9 +132,8 @@ namespace GrendelData.Votes
             catch (Exception e)
             {
                 _logger.LogError(e.Message);
+                return null;
             }
-
-            return null;
         }
     }
 }

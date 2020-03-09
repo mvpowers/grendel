@@ -27,6 +27,23 @@ namespace GrendelApi.Controllers
             _userService = userService;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<List<VoteView>>> ReadVotesByQuestionId([FromQuery] int questionId)
+        {
+            try
+            {
+                var voteViews = await _voteService.ReadVotesByQuestionId(questionId);
+                if (voteViews == null) throw new ReadEntityException(typeof(Vote));
+
+                return Ok(voteViews);
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e.Message);
+                return UnprocessableEntity(new ErrorResponse(e.Message));
+            }
+        }
+
         [HttpGet("active")]
         public async Task<ActionResult<List<VoteView>>> ReadActiveVotes()
         {
@@ -48,7 +65,7 @@ namespace GrendelApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<VoteView>> CreateVote([FromBody]VoteCreateRequest request)
+        public async Task<ActionResult<VoteView>> CreateVote([FromBody] VoteCreateRequest request)
         {
             try
             {
