@@ -180,7 +180,10 @@ export default {
       }
     },
     async likeCommentToggle(vote) {
-      if (this.$props.questionId) return;
+      if (this.$props.questionId) {
+        this.$toast.info('Voting has expired ');
+        return;
+      }
 
       if (vote.currentUserLike) {
         await this.deleteLike(vote.id);
